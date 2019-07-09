@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <link rel="stylesheet" href="../css/videos-modal.css">
+        <title>Videos Modal Example</title>
+    </head>
+    <body style="background: green">
+        <a href="https://www.youtube.com/watch?v=elbgmrH06Qg" class="play" data-videos-modal-id="elbgmrH06Qg"
+            data-videos-modal-autoplay="1" data-videos-modal-rel="0" data-videos-modal-controls="1"
+            data-videos-modal-showinfo="1" data-videos-modal-allowfullscreen="1">
+             First link
+        </a>
+        <br>
+        <a href="https://www.youtube.com/watch?v=FFrISHfZHuE?autoplay=1" class="play" data-videos-modal-id="FFrISHfZHuE"
+            data-videos-modal-autoplay="1" data-videos-modal-controls="1" data-videos-modal-rel="0"
+            data-videos-modal-showinfo="1" data-videos-modal-allowfullscreen="1">
+            Hiring
+        </a>
+        <br>
+        <a href="https://www.youtube.com/watch?v=QPmYEfvbQKE?autoplay=1" class="play" data-videos-modal-id="QPmYEfvbQKE"
+            data-videos-modal-autoplay="1" data-videos-modal-controls="1" data-videos-modal-rel="0"
+            data-videos-modal-showinfo="1" data-videos-modal-allowfullscreen="1">
+            Blockchain
+        </a>
+        <br>
+        <a href="https://www.youtube.com/watch?v=Q5fftru-t-g?autoplay=0" class="play" data-videos-modal-id="Q5fftru-t-g"
+            data-videos-modal-autoplay="0" data-videos-modal-controls="1" data-videos-modal-rel="0"
+            data-videos-modal-showinfo="1" data-videos-modal-allowfullscreen="1">
+            Itoura
+        </a>
+        <div id="videos-modal"></div>
+        <script src="../videos-modal.js"></script>
+        <script src="//opt-out.ferank.eu/tarteaucitron.js"></script>
+        <script>
+            tarteaucitron.init({
+                "privacyUrl": "", /* Privacy policy url */
+                "hashtag": "#tarteaucitron", /* Open the panel with this hashtag */
+                "cookieName": "tartaucitron", /* Cookie name */
+                "orientation": "bottom", /* Banner position (top - bottom) */
+                "showAlertSmall": true, /* Show the small banner on bottom right */
+                "cookieslist": true, /* Show the cookie list */
+                "adblocker": false, /* Show a Warning if an adblocker is detected */
+                "AcceptAllCta" : true, /* Show the accept all button when highPrivacy on */
+                "highPrivacy": false, /* Disable auto consent */
+                "handleBrowserDNTRequest": false, /* If Do Not Track == 1, accept all */
+                "removeCredit": true, /* Remove credit link */
+                "moreInfoLink": true, /* Show more info link */
+                //"cookieDomain": ".my-multisite-domaine.fr" /* Shared cookie for subdomain */
+            });
+            (tarteaucitron.job = tarteaucitron.job || []).push('youtube');
+            var videosModal = new VideosModal({
+                links: 'a.play',
+                tarteAuCitron: tarteaucitron,
+            });
+            var itoura2 = '<br>' +
+                '<a href="https://www.youtube.com/watch?v=4BP__EF9ess" class="play" data-videos-modal-id="4BP__EF9ess" ' +
+                    'data-videos-modal-autoplay="0" data-videos-modal-controls="1" data-videos-modal-rel="0" ' +
+                    'data-videos-modal-showinfo="1" data-videos-modal-allowfullscreen="1">' +
+                    'Itoura 2' +
+                '</a>';
+            document.body.insertAdjacentHTML('beforeend', itoura2);
+            videosModal.reset();
+        </script>
+    </body>
+</html>
