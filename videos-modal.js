@@ -532,8 +532,8 @@ class VideosModal
             && link.getAttribute('data-videos-modal-' + parameter) !== null
             && link.getAttribute('data-videos-modal-' + parameter) !== 'null') {
             value = link.getAttribute('data-videos-modal-' + parameter);
-        } else if (this.options['videos-' + parameter] !== null) {
-            value = this.options['videos-' + parameter];
+        } else if (this.options['videos_' + parameter] !== null) {
+            value = this.options['videos_' + parameter];
         } else {
             value = defaultValue;
         }
