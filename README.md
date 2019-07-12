@@ -5,13 +5,18 @@ A little JS plugin for videos embed working with tarteaucitronjs
 
 Include `videos-modal.js` script :
 ```html
-<script src="videos-modal.js"><script/>
+<script src="videos-modal.js"></script>
+```
+
+Include `videos-modal.css` stylesheet :
+```html
+<link rel="stylesheet" href="videos-modal.css">
 ```
 
 ## Usage
 
 This is a script that show videos (from youtube or others) into a modal. It's working with tarteaucitron and videos will be blocked if the provider (Youtube for example) is not allowed by the user.<br>
-Examples below can be found in the [example page](./example/index.html).
+Examples below can be found in the [example page](https://www.hello-motto.fr/videos-modal/examples/index.html).
 
 ### Create JavaScript Object
 
