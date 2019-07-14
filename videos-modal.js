@@ -21,11 +21,14 @@ class VideosModal
 
             var that = this;
 
-            if (! that.isTarteAuCitronEnabled() || that.isYoutubeAllowedByTarteAuCitron()) {
-                that.open(event.target);
+            var link = event.target;
+
+            var provider = link.getAttribute('data-videos-modal-provider');
+
+            if (! that.isTarteAuCitronEnabled() || that.isProviderAllowedByTarteAuCitron(provider)) {
+                that.open(link);
             } else {
-                var tarteAuCitronParametersLink = document.getElementById('tarteaucitronManager');
-                tarteAuCitronParametersLink.click();
+                that.options['tarteAuCitron'].userInterface.openPanel();
             }
         };
 
@@ -155,6 +158,7 @@ class VideosModal
         this.options['tarteAuCitron'] = null;
         this.options['links'] = '.videos-modal-link';
 
+        this.options['videos_provider'] = null;
         this.options['videos_id'] = null;
         this.options['videos_width'] = null;
         this.options['videos_height'] = null;
@@ -174,12 +178,13 @@ class VideosModal
     open (link) {
         var that = this;
         var modal = document.getElementById('videos-modal');
+        var provider = link.getAttribute('data-videos-modal-provider');
         modal.classList.add('opened');
         modal.appendChild(that.getVideoTemplate(link));
 
         var tarteaucitron = that.options['tarteAuCitron'];
-        if (that.isYoutubeAllowedByTarteAuCitron()) {
-            tarteaucitron.services.youtube.js();
+        if (that.isProviderAllowedByTarteAuCitron(provider)) {
+            tarteaucitron.services[provider].js();
         }
 
         if (that.options['navigate'] === true && that.linksNumber > 1) {
@@ -259,23 +264,29 @@ class VideosModal
      */
     updateNavigationLinks (triggeredLink) {
         var that = this;
+        var provider = triggeredLink.getAttribute('data-videos-modal-provider');
         var modal = document.getElementById('videos-modal');
         var prevLink = document.getElementById('videos-modal-prev-link');
         var nextLink = document.getElementById('videos-modal-next-link');
 
-        that.removeVideoContainer();
+        if (! that.isTarteAuCitronEnabled() || that.isProviderAllowedByTarteAuCitron(provider)) {
+            that.removeVideoContainer();
 
-        that.editLink(prevLink, that.getPrevLink());
+            modal.appendChild(that.getVideoTemplate(triggeredLink));
 
-        that.editLink(nextLink, that.getNextLink());
+            that.editLink(prevLink, that.getPrevLink());
 
-        modal.appendChild(that.getVideoTemplate(triggeredLink));
+            that.editLink(nextLink, that.getNextLink());
 
-        if (that.isYoutubeAllowedByTarteAuCitron()) {
-            that.options['tarteAuCitron'].services.youtube.js();
+            if (that.isProviderAllowedByTarteAuCitron(provider)) {
+                that.options['tarteAuCitron'].services[provider].js();
+            }
+
+            that.currentLink = parseInt(triggeredLink.getAttribute('data-videos-modal-order'));
+        } else {
+            that.close();
+            that.options['tarteAuCitron'].userInterface.openPanel();
         }
-
-        that.currentLink = parseInt(triggeredLink.getAttribute('data-videos-modal-order'));
 
         return this;
     }
@@ -369,8 +380,8 @@ class VideosModal
      * @returns {HTMLElement}
      */
     getVideoTemplate (link) {
-
-        var id = this.setTemplateLinkValues(link, 'id', 'Q5fftru-t-g');
+        var id, src, videoPlayer;
+        var provider = this.setTemplateLinkValues(link, 'provider');
         var width = this.setTemplateLinkValues(link, 'width', window.innerWidth * .7);
         var height = this.setTemplateLinkValues(link, 'height', window.innerHeight * .7);
         var autoplay = this.setTemplateLinkValues(link, 'autoplay');
@@ -379,37 +390,43 @@ class VideosModal
         var showinfo = this.setTemplateLinkValues(link, 'showinfo');
         var allowfullscreen = this.setTemplateLinkValues(link, 'allowfullscreen');
         var marginTop = parseInt((window.innerHeight - height) / 2) + 'px';
-        var src = 'https://www.youtube.com/embed/' + id + '?&autoplay=' + autoplay;
 
-        if (this.isTarteAuCitronEnabled() && this.isYoutubeAllowedByTarteAuCitron()) {
-            var videosTarteAuCitron = document.createElement('div');
-            videosTarteAuCitron.classList.add('videos_player');
-            videosTarteAuCitron.classList.add('youtube_player');
-            videosTarteAuCitron.setAttribute('videoID', id);
-            videosTarteAuCitron.setAttribute('width', width);
-            videosTarteAuCitron.setAttribute('height', height);
-            videosTarteAuCitron.setAttribute('rel', rel);
-            videosTarteAuCitron.setAttribute('controls', controls);
-            videosTarteAuCitron.setAttribute('showinfo', showinfo);
-            videosTarteAuCitron.setAttribute('allowfullscreen', allowfullscreen);
-            videosTarteAuCitron.setAttribute('autoplay', autoplay);
-
-            videosTarteAuCitron.style.marginTop = marginTop;
-
-            return videosTarteAuCitron;
-        } else {
-            var videosIframe = document.createElement('iframe');
-            videosIframe.classList.add('videos_player');
-            videosIframe.setAttribute('width', width);
-            videosIframe.setAttribute('height', height);
-            videosIframe.setAttribute('src', src);
-            videosIframe.setAttribute('frameborder', 0);
-            videosIframe.setAttribute('allowfullscreen', allowfullscreen);
-
-            videosIframe.style.marginTop = marginTop;
-
-            return videosIframe;
+        switch (provider) {
+            case 'youtube':
+                id = this.setTemplateLinkValues(link, 'id', 'Q5fftru-t-g');
+                src = '//www.youtube.com/embed/' + id + '?&autoplay=' + autoplay;
+                break;
+            case 'dailymotion':
+                id = this.setTemplateLinkValues(link, 'id', 'xta4r');
+                src = '//www.dailymotion.com/embed/video/' + id + '?info=' + showinfo + '&autoPlay=' + autoplay;
+                break;
         }
+
+        
+
+        if (this.isTarteAuCitronEnabled() && this.isProviderAllowedByTarteAuCitron(provider)) {
+            videoPlayer = document.createElement('div');
+            videoPlayer.classList.add(provider + '_player');
+            videoPlayer.setAttribute('videoID', id);
+            videoPlayer.setAttribute('rel', rel);
+            videoPlayer.setAttribute('controls', controls);
+            videoPlayer.setAttribute('showinfo', showinfo);
+            videoPlayer.setAttribute('allowfullscreen', allowfullscreen);
+            videoPlayer.setAttribute('autoplay', autoplay);
+        } else {
+            videoPlayer = document.createElement('iframe');
+            videoPlayer.setAttribute('src', src);
+            videoPlayer.setAttribute('frameborder', 0);
+        }
+
+        videoPlayer.setAttribute('allowfullscreen', allowfullscreen);
+        videoPlayer.setAttribute('width', width);
+        videoPlayer.setAttribute('height', height);
+        videoPlayer.classList.add('videos_player');
+
+        videoPlayer.style.marginTop = marginTop;
+
+        return videoPlayer;
     }
 
     /**
@@ -435,6 +452,7 @@ class VideosModal
     editLink (targetLink, duplicatedLink) {
         targetLink.setAttribute('data-videos-modal-order', duplicatedLink.getAttribute('data-videos-modal-order'));
         targetLink.setAttribute('data-videos-modal-id', this.getLinkAttribute(duplicatedLink, 'id'));
+        targetLink.setAttribute('data-videos-modal-provider', this.getLinkAttribute(duplicatedLink, 'provider'));
         targetLink.setAttribute('data-videos-modal-width', this.getLinkAttribute(duplicatedLink, 'width'));
         targetLink.setAttribute('data-videos-modal-height', this.getLinkAttribute(duplicatedLink, 'height'));
         targetLink.setAttribute('data-videos-modal-autoplay', this.getLinkAttribute(duplicatedLink, 'autoplay'));
@@ -447,7 +465,7 @@ class VideosModal
     }
 
     /**
-     * Set the Youtube Modal Container and insert it at the end of the body tag
+     * Set the Videos Modal Container and insert it at the end of the body tag
      *
      * @returns {VideosModal}
      */
@@ -506,6 +524,24 @@ class VideosModal
      */
     isTarteAuCitronEnabled () {
         return this.options['tarteAuCitron'] !== null;
+    }
+
+    /**
+     * Check if the provider player is allowed by tarteaucitron js
+     *
+     * @param provider
+     * @returns {boolean}
+     */
+    isProviderAllowedByTarteAuCitron (provider) {
+        var tarteaucitron = this.options['tarteAuCitron'];
+        if (this.isTarteAuCitronEnabled()) {
+            switch (provider) {
+                case 'youtube':
+                case 'dailymotion':
+                    return tarteaucitron.state[provider] !== false;
+            }
+        }
+        return false;
     }
 
     /**
