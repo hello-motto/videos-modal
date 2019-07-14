@@ -21,11 +21,14 @@ class VideosModal
 
             var that = this;
 
-            if (! that.isTarteAuCitronEnabled() || that.isYoutubeAllowedByTarteAuCitron()) {
-                that.open(event.target);
+            var link = event.target;
+
+            var provider = link.getAttribute('data-videos-modal-provider');
+
+            if (! that.isTarteAuCitronEnabled() || that.isProviderAllowedByTarteAuCitron(provider)) {
+                that.open(link);
             } else {
-                var tarteAuCitronParametersLink = document.getElementById('tarteaucitronManager');
-                tarteAuCitronParametersLink.click();
+                that.options.tarteAuCitron.userInterface.openPanel();
             }
         };
 
@@ -51,7 +54,9 @@ class VideosModal
         }
 
         for (var property in options) {
-            that.options[property] = options[property];
+            if (typeof that.options[property] !== 'undefined') {
+                that.options[property] = options[property];
+            }
         }
 
         that.setLinks();
@@ -69,6 +74,7 @@ class VideosModal
      */
     initEvents (reset) {
         var that = this;
+        var i;
 
         if (reset !== true) {
             if (window.addEventListener) {
@@ -82,18 +88,22 @@ class VideosModal
             }
 
             // Add the close icon if it is enabled
-            if (that.options['closeByIcon'] === true) {
-                for (var i = 0; i < document.getElementsByClassName('videos-modal-close').length; i++) {
-                    document.getElementsByClassName('videos-modal-close')[i].addEventListener('click', function(event) {
-                        that.close();
-                    });
-                }
+            if (that.options.closeByIcon === true) {
+                document.getElementById('videos-modal-close').addEventListener('click', function() {
+                    that.close();
+                });
+            }
+
+            if (this.options.closeOnClick === true) {
+                document.getElementById('videos-modal-background').addEventListener('click', function () {
+                    that.close();
+                });
             }
         }
 
-        for (var i = 0; i < that.linksNumber; i++) {
+        for (i = 0; i < that.linksNumber; i++) {
             // Set the order of the videos if the navigation is allowed
-            if (that.options['navigate'] === true && that.linksNumber > 1) {
+            if (that.options.navigate === true && that.linksNumber > 1) {
                 that.links[i].setAttribute('data-videos-modal-order', i);
             }
             that.links[i].addEventListener('click', that.clickHandler, false);
@@ -112,7 +122,7 @@ class VideosModal
 
         that.currentLink = 0;
 
-        that.links = document.querySelectorAll(that.options['links']);
+        that.links = document.querySelectorAll(that.options.links);
 
         that.linksNumber = that.links.length;
 
@@ -143,26 +153,27 @@ class VideosModal
     setDefaultOptions () {
         this.options = [];
 
-        this.options['closeOnClick'] = true;
-        this.options['closeWithEscape'] = true;
-        this.options['closeByIcon'] = true;
-        this.options['closeIcon'] = this.options['closeByIcon'] === true ? this.getDefaultCloseIcon() : null;
-        this.options['loading'] = true;
-        this.options['loaderIcon'] = this.options['loading'] === true ? this.getDefaultLoaderIcon() : null;
-        this.options['navigate'] = true;
-        this.options['leftArrow'] = this.options['navigate'] === true ? this.getDefaultLeftArrow() : null;
-        this.options['rightArrow'] = this.options['navigate'] === true ? this.getDefaultRightArrow() : null;
-        this.options['tarteAuCitron'] = null;
-        this.options['links'] = '.videos-modal-link';
+        this.options.closeOnClick = true;
+        this.options.closeWithEscape = true;
+        this.options.closeByIcon = true;
+        this.options.closeIcon = this.options.closeByIcon === true ? this.getDefaultCloseIcon() : null;
+        this.options.loading = true;
+        this.options.loaderIcon = this.options.loading === true ? this.getDefaultLoaderIcon() : null;
+        this.options.navigate = true;
+        this.options.leftArrow = this.options.navigate === true ? this.getDefaultLeftArrow() : null;
+        this.options.rightArrow = this.options.navigate === true ? this.getDefaultRightArrow() : null;
+        this.options.tarteAuCitron = null;
+        this.options.links = '.videos-modal-link';
 
-        this.options['videos_id'] = null;
-        this.options['videos_width'] = null;
-        this.options['videos_height'] = null;
-        this.options['videos_autoplay'] = 0;
-        this.options['videos_rel'] = 0;
-        this.options['videos_controls'] = 0;
-        this.options['videos_showinfo'] = 0;
-        this.options['videos_allowfullscreen'] = 0;
+        this.options.videos_provider = null;
+        this.options.videos_id = null;
+        this.options.videos_width = null;
+        this.options.videos_height = null;
+        this.options.videos_autoplay = 0;
+        this.options.videos_rel = 0;
+        this.options.videos_controls = 0;
+        this.options.videos_showinfo = 0;
+        this.options.videos_allowfullscreen = 0;
     }
 
     /**
@@ -174,15 +185,15 @@ class VideosModal
     open (link) {
         var that = this;
         var modal = document.getElementById('videos-modal');
+        var provider = link.getAttribute('data-videos-modal-provider');
         modal.classList.add('opened');
         modal.appendChild(that.getVideoTemplate(link));
 
-        var tarteaucitron = that.options['tarteAuCitron'];
-        if (that.isYoutubeAllowedByTarteAuCitron()) {
-            tarteaucitron.services.youtube.js();
+        if (that.isProviderAllowedByTarteAuCitron(provider)) {
+            that.options.tarteAuCitron.services[provider].js();
         }
 
-        if (that.options['navigate'] === true && that.linksNumber > 1) {
+        if (that.options.navigate === true && that.linksNumber > 1) {
             that.currentLink = parseInt(link.getAttribute('data-videos-modal-order'));
             var prevLink = that.createLink(that.getPrevLink());
             prevLink.setAttribute('id', 'videos-modal-prev-link');
@@ -190,7 +201,7 @@ class VideosModal
                 event.preventDefault();
                 that.prev();
             });
-            prevLink.insertAdjacentHTML('afterbegin', that.options['leftArrow']);
+            prevLink.insertAdjacentHTML('afterbegin', that.options.leftArrow);
             var nextLink = that.createLink(that.getNextLink());
             nextLink.setAttribute('id', 'videos-modal-next-link');
             nextLink.addEventListener('click', function(event) {
@@ -198,7 +209,7 @@ class VideosModal
                 that.next();
 
             });
-            nextLink.insertAdjacentHTML('afterbegin', that.options['rightArrow']);
+            nextLink.insertAdjacentHTML('afterbegin', that.options.rightArrow);
             modal.appendChild(prevLink);
             modal.appendChild(nextLink);
         }
@@ -259,23 +270,31 @@ class VideosModal
      */
     updateNavigationLinks (triggeredLink) {
         var that = this;
+        var provider = triggeredLink.getAttribute('data-videos-modal-provider');
         var modal = document.getElementById('videos-modal');
         var prevLink = document.getElementById('videos-modal-prev-link');
         var nextLink = document.getElementById('videos-modal-next-link');
 
-        that.removeVideoContainer();
+        if (! that.isTarteAuCitronEnabled() || that.isProviderAllowedByTarteAuCitron(provider)) {
+            var newVideoTemplate = that.getVideoTemplate(triggeredLink);
 
-        that.editLink(prevLink, that.getPrevLink());
+            that.currentLink = parseInt(triggeredLink.getAttribute('data-videos-modal-order'));
 
-        that.editLink(nextLink, that.getNextLink());
+            that.removeVideoContainer();
 
-        modal.appendChild(that.getVideoTemplate(triggeredLink));
+            that.editLink(prevLink, that.getPrevLink());
 
-        if (that.isYoutubeAllowedByTarteAuCitron()) {
-            that.options['tarteAuCitron'].services.youtube.js();
+            that.editLink(nextLink, that.getNextLink());
+
+            if (that.isProviderAllowedByTarteAuCitron(provider)) {
+                that.options.tarteAuCitron.services[provider].js();
+            }
+
+            modal.appendChild(newVideoTemplate);
+        } else {
+            that.close();
+            that.options.tarteAuCitron.userInterface.openPanel();
         }
-
-        that.currentLink = parseInt(triggeredLink.getAttribute('data-videos-modal-order'));
 
         return this;
     }
@@ -286,7 +305,7 @@ class VideosModal
      * @returns {NodeListOf<HTMLElementTagNameMap[*]>}
      */
     getLinks() {
-        return document.querySelectorAll(this.options['links']);
+        return document.querySelectorAll(this.options.links);
     }
 
     /**
@@ -350,7 +369,7 @@ class VideosModal
      * @returns {HTMLElement}
      */
     getCloseIcon () {
-        return this.options['closeIcon'];
+        return this.options.closeIcon;
     }
 
     /**
@@ -359,7 +378,7 @@ class VideosModal
      * @returns {HTMLElement}
      */
     getLoaderIcon () {
-        return this.options['loaderIcon'];
+        return this.options.loaderIcon;
     }
 
     /**
@@ -369,47 +388,53 @@ class VideosModal
      * @returns {HTMLElement}
      */
     getVideoTemplate (link) {
-
-        var id = this.setTemplateLinkValues(link, 'id', 'Q5fftru-t-g');
-        var width = this.setTemplateLinkValues(link, 'width', window.innerWidth * .7);
-        var height = this.setTemplateLinkValues(link, 'height', window.innerHeight * .7);
+        var id, src, videoPlayer;
+        var provider = this.setTemplateLinkValues(link, 'provider');
+        var width = this.setTemplateLinkValues(link, 'width', window.innerWidth * 0.7);
+        var height = this.setTemplateLinkValues(link, 'height', window.innerHeight * 0.7);
         var autoplay = this.setTemplateLinkValues(link, 'autoplay');
         var rel = this.setTemplateLinkValues(link, 'rel');
         var controls = this.setTemplateLinkValues(link, 'controls');
         var showinfo = this.setTemplateLinkValues(link, 'showinfo');
         var allowfullscreen = this.setTemplateLinkValues(link, 'allowfullscreen');
         var marginTop = parseInt((window.innerHeight - height) / 2) + 'px';
-        var src = 'https://www.youtube.com/embed/' + id + '?&autoplay=' + autoplay;
 
-        if (this.isTarteAuCitronEnabled() && this.isYoutubeAllowedByTarteAuCitron()) {
-            var videosTarteAuCitron = document.createElement('div');
-            videosTarteAuCitron.classList.add('videos_player');
-            videosTarteAuCitron.classList.add('youtube_player');
-            videosTarteAuCitron.setAttribute('videoID', id);
-            videosTarteAuCitron.setAttribute('width', width);
-            videosTarteAuCitron.setAttribute('height', height);
-            videosTarteAuCitron.setAttribute('rel', rel);
-            videosTarteAuCitron.setAttribute('controls', controls);
-            videosTarteAuCitron.setAttribute('showinfo', showinfo);
-            videosTarteAuCitron.setAttribute('allowfullscreen', allowfullscreen);
-            videosTarteAuCitron.setAttribute('autoplay', autoplay);
-
-            videosTarteAuCitron.style.marginTop = marginTop;
-
-            return videosTarteAuCitron;
-        } else {
-            var videosIframe = document.createElement('iframe');
-            videosIframe.classList.add('videos_player');
-            videosIframe.setAttribute('width', width);
-            videosIframe.setAttribute('height', height);
-            videosIframe.setAttribute('src', src);
-            videosIframe.setAttribute('frameborder', 0);
-            videosIframe.setAttribute('allowfullscreen', allowfullscreen);
-
-            videosIframe.style.marginTop = marginTop;
-
-            return videosIframe;
+        switch (provider) {
+            case 'youtube':
+                id = this.setTemplateLinkValues(link, 'id', 'Q5fftru-t-g');
+                src = '//www.youtube.com/embed/' + id + '?&autoplay=' + autoplay;
+                break;
+            case 'dailymotion':
+                id = this.setTemplateLinkValues(link, 'id', 'xta4r');
+                src = '//www.dailymotion.com/embed/video/' + id + '?info=' + showinfo + '&autoPlay=' + autoplay;
+                break;
         }
+
+        
+
+        if (this.isTarteAuCitronEnabled() && this.isProviderAllowedByTarteAuCitron(provider)) {
+            videoPlayer = document.createElement('div');
+            videoPlayer.classList.add(provider + '_player');
+            videoPlayer.setAttribute('videoID', id);
+            videoPlayer.setAttribute('rel', rel);
+            videoPlayer.setAttribute('controls', controls);
+            videoPlayer.setAttribute('showinfo', showinfo);
+            videoPlayer.setAttribute('allowfullscreen', allowfullscreen);
+            videoPlayer.setAttribute('autoplay', autoplay);
+        } else {
+            videoPlayer = document.createElement('iframe');
+            videoPlayer.setAttribute('src', src);
+            videoPlayer.setAttribute('frameborder', 0);
+        }
+
+        videoPlayer.setAttribute('allowfullscreen', allowfullscreen);
+        videoPlayer.setAttribute('width', width);
+        videoPlayer.setAttribute('height', height);
+        videoPlayer.classList.add('videos_player');
+
+        videoPlayer.style.marginTop = marginTop;
+
+        return videoPlayer;
     }
 
     /**
@@ -435,6 +460,7 @@ class VideosModal
     editLink (targetLink, duplicatedLink) {
         targetLink.setAttribute('data-videos-modal-order', duplicatedLink.getAttribute('data-videos-modal-order'));
         targetLink.setAttribute('data-videos-modal-id', this.getLinkAttribute(duplicatedLink, 'id'));
+        targetLink.setAttribute('data-videos-modal-provider', this.getLinkAttribute(duplicatedLink, 'provider'));
         targetLink.setAttribute('data-videos-modal-width', this.getLinkAttribute(duplicatedLink, 'width'));
         targetLink.setAttribute('data-videos-modal-height', this.getLinkAttribute(duplicatedLink, 'height'));
         targetLink.setAttribute('data-videos-modal-autoplay', this.getLinkAttribute(duplicatedLink, 'autoplay'));
@@ -447,7 +473,7 @@ class VideosModal
     }
 
     /**
-     * Set the Youtube Modal Container and insert it at the end of the body tag
+     * Set the Videos Modal Container and insert it at the end of the body tag
      *
      * @returns {VideosModal}
      */
@@ -458,27 +484,18 @@ class VideosModal
             videosModalContainer = document.createElement('div');
             videosModalContainer.setAttribute('id', 'videos-modal');
         }
-        if (that.options['closeByIcon'] === true) {
+        if (that.options.closeByIcon === true) {
             videosModalContainer.insertAdjacentHTML('beforeend', that.getCloseIcon());
         }
-        if (that.options['loading'] === true) {
+        if (that.options.loading === true) {
             videosModalContainer.insertAdjacentHTML('beforeend', that.getLoaderIcon());
         }
 
         document.body.appendChild(videosModalContainer);
 
         var modalBackground = document.createElement('div');
-        modalBackground.classList.add('videos-modal-background');
+        modalBackground.setAttribute('id', 'videos-modal-background');
         videosModalContainer.appendChild(modalBackground);
-
-        if (this.options['closeOnClick'] === true) {
-            var background = document.getElementsByClassName('videos-modal-background');
-            for (var i = 0; i < background.length; i++) {
-                background[i].addEventListener('click', function (event) {
-                    that.close();
-                });
-            }
-        }
 
         return this;
     }
@@ -505,7 +522,25 @@ class VideosModal
      * @returns {boolean}
      */
     isTarteAuCitronEnabled () {
-        return this.options['tarteAuCitron'] !== null;
+        return this.options.tarteAuCitron !== null;
+    }
+
+    /**
+     * Check if the provider player is allowed by tarteaucitron js
+     *
+     * @param provider
+     * @returns {boolean}
+     */
+    isProviderAllowedByTarteAuCitron (provider) {
+        var tarteaucitron = this.options.tarteAuCitron;
+        if (this.isTarteAuCitronEnabled()) {
+            switch (provider) {
+                case 'youtube':
+                case 'dailymotion':
+                    return tarteaucitron.state[provider] !== false;
+            }
+        }
+        return false;
     }
 
     /**
@@ -514,8 +549,7 @@ class VideosModal
      * @returns {boolean}
      */
     isYoutubeAllowedByTarteAuCitron () {
-        var tarteaucitron = this.options['tarteAuCitron'];
-        return this.isTarteAuCitronEnabled() && tarteaucitron.state.youtube !== false;
+        return this.isTarteAuCitronEnabled() && this.options.tarteAuCitron.state.youtube !== false;
     }
 
     /**
@@ -528,9 +562,9 @@ class VideosModal
      */
     setTemplateLinkValues (link, parameter, defaultValue = null) {
         var value;
-        if (typeof link.getAttribute('data-videos-modal-' + parameter) !== 'undefined'
-            && link.getAttribute('data-videos-modal-' + parameter) !== null
-            && link.getAttribute('data-videos-modal-' + parameter) !== 'null') {
+        if (typeof link.getAttribute('data-videos-modal-' + parameter) !== 'undefined' &&
+            link.getAttribute('data-videos-modal-' + parameter) !== null &&
+            link.getAttribute('data-videos-modal-' + parameter) !== 'null') {
             value = link.getAttribute('data-videos-modal-' + parameter);
         } else if (this.options['videos_' + parameter] !== null) {
             value = this.options['videos_' + parameter];
@@ -566,17 +600,17 @@ class VideosModal
             switch (event.keyCode || event.which) {
                 case 27:
                     // Close the modal by press the escape task
-                    if (that.options['closeWithEscape'] === true) {
+                    if (that.options.closeWithEscape === true) {
                         that.close();
                     }
                     break;
                 case 37:
-                    if (that.options['navigate'] === true && that.linksNumber > 1) {
+                    if (that.options.navigate === true && that.linksNumber > 1) {
                         that.prev();
                     }
                     break;
                 case 39:
-                    if (that.options['navigate'] === true && that.linksNumber > 1) {
+                    if (that.options.navigate === true && that.linksNumber > 1) {
                         that.next();
                     }
                     break;
@@ -624,7 +658,7 @@ class VideosModal
      * @returns {string}
      */
     getDefaultCloseIcon () {
-        return '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" class="videos-modal-close"' +
+        return '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" id="videos-modal-close"' +
             'viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve">' +
             '<path fill="#999" d="M30.3448276,31.4576271 C29.9059965,31.4572473 29.4852797,31.2855701 29.1751724,30.980339 ' +
             'L0.485517241,2.77694915 C-0.122171278,2.13584324 -0.104240278,1.13679247 0.52607603,0.517159487 C1.15639234,' +
