@@ -16,7 +16,8 @@ Include `videos-modal.css` stylesheet :
 ## Usage
 
 This is a script that show videos (from youtube or others) into a modal. It's working with tarteaucitron and videos will be blocked if the provider (Youtube for example) is not allowed by the user.<br>
-Examples below can be found in the [example page](https://www.hello-motto.fr/videos-modal/examples/index.html).
+Examples below can be found in the [example page](https://www.hello-motto.fr/videos-modal/examples/multi-providers.html)
+and in the [example without tarteaucitron page](https://www.hello-motto.fr/videos-modal/examples/without-tarteaucitron.html).
 
 ### Create JavaScript Object
 
@@ -39,6 +40,7 @@ var videosModal = new VideosModal({
     tarteAuCitron: null, // if tarteaucitron is used, put the variable into it.
     links: '.videos-modal-link', // It is possible to set several selectors as a string.
     videos_id: null,
+    videos_provider: null,
     videos_width: null,
     videos_height: null,
     videos_autoplay: 0,
@@ -62,8 +64,9 @@ This is an optional container. If this not exists, it will be inserted at the en
 The `href` attribute won't be used (but is important if javascript is no enabled). The `data-videos-modal-*` attributes overwrite the by default parameters.
 
 ```html
-<a href="https://www.youtube.com/watch?v=elbgmrH06Qg" class="videos-modal-link" data-videos-modal-id="elbgmrH06Qg"
-    data-videos-modal-autoplay="1" data-videos-modal-rel="0" data-videos-modal-controls="1" data-videos-modal-showinfo="1" data-videos-modal-allowfullscreen="1">
+<a href="https://www.youtube.com/watch?v=elbgmrH06Qg" class="videos-modal-link" data-videos-modal-provider="youtube"
+    data-videos-modal-id="elbgmrH06Qg" data-videos-modal-autoplay="1" data-videos-modal-rel="0"
+    data-videos-modal-controls="1" data-videos-modal-showinfo="1" data-videos-modal-allowfullscreen="1">
         First link
 </a>
 ```
@@ -80,7 +83,12 @@ videosModal.reset();
 
 This script should work with all modern browsers (so forget IE). If you see compatibility problems please contact me.
 
+## Available providers
+
+- Youtube
+- Dailymotion
+
 ## Next versions
 
-At present it only supports youtube videos, but in the next versions it will work with other providers.<br>
-Notice that the `allowfullscreen` parameter [doesn't work with tarteaucitron (fr)](https://github.com/AmauriC/tarteaucitron.js/issues/273)
+At present it only supports youtube and dailymotion videos, but in the next versions it will work with other providers.<br>
+Notice that the `allowfullscreen` parameter [doesn't work with tarteaucitron (fr)](https://github.com/AmauriC/tarteaucitron.js/issues/273).
