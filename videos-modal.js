@@ -276,9 +276,11 @@ class VideosModal
         var nextLink = document.getElementById('videos-modal-next-link');
 
         if (! that.isTarteAuCitronEnabled() || that.isProviderAllowedByTarteAuCitron(provider)) {
-            that.removeVideoContainer();
+            var newVideoTemplate = that.getVideoTemplate(triggeredLink);
 
-            modal.appendChild(that.getVideoTemplate(triggeredLink));
+            that.currentLink = parseInt(triggeredLink.getAttribute('data-videos-modal-order'));
+
+            that.removeVideoContainer();
 
             that.editLink(prevLink, that.getPrevLink());
 
@@ -288,7 +290,7 @@ class VideosModal
                 that.options.tarteAuCitron.services[provider].js();
             }
 
-            that.currentLink = parseInt(triggeredLink.getAttribute('data-videos-modal-order'));
+            modal.appendChild(newVideoTemplate);
         } else {
             that.close();
             that.options.tarteAuCitron.userInterface.openPanel();
