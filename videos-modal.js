@@ -286,11 +286,11 @@ class VideosModal
 
             that.editLink(nextLink, that.getNextLink());
 
+            modal.appendChild(newVideoTemplate);
+
             if (that.isProviderAllowedByTarteAuCitron(provider)) {
                 that.options.tarteAuCitron.services[provider].js();
             }
-
-            modal.appendChild(newVideoTemplate);
         } else {
             that.close();
             that.options.tarteAuCitron.userInterface.openPanel();
