@@ -1,6 +1,6 @@
 {
   "name": "hello-motto-videos-modal",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A little JS plugin for videos embed working with tarteaucitronjs",
   "main": "videos-modal.js",
   "directories": {
@@ -17,9 +17,12 @@
     "videos",
     "youtube",
     "dailymotion",
+    "vimeo",
+    "modal",
     "lightbox",
     "fancybox",
-    "rgpd",
+    "GDPR",
+    "RGPD",
     "tarteaucitron",
     "tarteaucitron.js"
   ],

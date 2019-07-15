@@ -1,16 +1,40 @@
 # Videos Modal
-A little JS plugin for videos embed working with tarteaucitronjs
+[![NPM @latest](https://img.shields.io/npm/v/hello-motto-videos-modal.svg)](https://www.npmjs.com/package/hello-motto-videos-modal)<br>
+
+A little JS plugin for videos embed working with tarteaucitronjs.<br>
+
+[![NPM stats](https://nodei.co/npm/hello-motto-videos-modal.svg?downloadRank=true&downloads=true)](https://www.npmjs.org/package/hello-motto-videos-modal)
 
 ## Installation
 
-Include `videos-modal.js` script :
-```html
-<script src="videos-modal.js"></script>
+### Node.js JavaScript
+
+You may install the NPM package `hello-motto-videos-modal`. When installed you can add it in your resources.
+
+```bash
+$ npm -g install hello-motto-videos-modal
 ```
 
-Include `videos-modal.css` stylesheet :
+### Direct download
+
+Instead of using NPM, it is possible to download [the last stable version here](https://github.com/hello-motto/videos-modal/archive/master.zip) and use the files that you need.
+
+### HTML
+
+Include `videos-modal.css` or `videos-modal.min.css` stylesheet :
 ```html
-<link rel="stylesheet" href="videos-modal.css">
+<!-- Normal version -->
+<link rel="stylesheet" href="videos-modal.css"/>
+<!-- OR the minified version -->
+<link rel="stylesheet" href="videos-modal.min.css"/>
+```
+
+Include `videos-modal.js` or `videos-modal.min.js` script :
+```html
+<!-- Normal version -->
+<script src="videos-modal.js"></script>
+<!-- OR the minified and uglyfied version -->
+<script src="videos-modal.min.js"></script>
 ```
 
 ## Usage
@@ -47,7 +71,11 @@ var videosModal = new VideosModal({
     videos_rel: 0,
     videos_controls: 0,
     videos_showinfo: 0,
-    videos_allowfullscreen: 0
+    videos_allowfullscreen: 0,
+    videos_title: true,
+    videos_byline: true,
+    videos_portrait: true,
+    videos_loop: false
 });
 ```
 
@@ -87,8 +115,9 @@ This script should work with all modern browsers (so forget IE). If you see comp
 
 - Youtube
 - Dailymotion
+- Vimeo
 
 ## Next versions
 
-At present it only supports youtube and dailymotion videos, but in the next versions it will work with other providers.<br>
+At present it only supports youtube, vimeo and dailymotion videos, but in the next versions it will work with other providers.<br>
 Notice that the `allowfullscreen` parameter [doesn't work with tarteaucitron (fr)](https://github.com/AmauriC/tarteaucitron.js/issues/273).
