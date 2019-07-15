@@ -1,7 +1,7 @@
 /**
  * Videos Modal Plugin https://github.com/hello-motto
  * 
- * Version 1.0
+ * Version 1.0.3
  * 
  * @author Jean-Baptiste MOTTO <contact@hello-motto.fr>
  */
@@ -174,6 +174,10 @@ class VideosModal
         this.options.videos_controls = 0;
         this.options.videos_showinfo = 0;
         this.options.videos_allowfullscreen = 0;
+        this.options.videos_title = true;
+        this.options.videos_byline = true;
+        this.options.videos_portrait = true;
+        this.options.videos_loop = false;
     }
 
     /**
@@ -398,6 +402,10 @@ class VideosModal
         var showinfo = this.setTemplateLinkValues(link, 'showinfo');
         var allowfullscreen = this.setTemplateLinkValues(link, 'allowfullscreen');
         var marginTop = parseInt((window.innerHeight - height) / 2) + 'px';
+        var title = this.setTemplateLinkValues(link, 'title');
+        var byline = this.setTemplateLinkValues(link, 'byline');
+        var portrait = this.setTemplateLinkValues(link, 'portrait');
+        var loop = this.setTemplateLinkValues(link, 'loop');
 
         switch (provider) {
             case 'youtube':
@@ -407,6 +415,14 @@ class VideosModal
             case 'dailymotion':
                 id = this.setTemplateLinkValues(link, 'id', 'xta4r');
                 src = '//www.dailymotion.com/embed/video/' + id + '?info=' + showinfo + '&autoPlay=' + autoplay;
+                break;
+            case 'vimeo':
+                id = this.setTemplateLinkValues(link, 'id', '210806913');
+                src = '//player.vimeo.com/video/' + id + '?autoplay' + autoplay;
+                src += '&title=' + title;
+                src += '&byline=' + byline;
+                src += '&portrait=' + portrait;
+                src += '&loop=' + loop;
                 break;
         }
 
@@ -421,6 +437,10 @@ class VideosModal
             videoPlayer.setAttribute('showinfo', showinfo);
             videoPlayer.setAttribute('allowfullscreen', allowfullscreen);
             videoPlayer.setAttribute('autoplay', autoplay);
+            videoPlayer.setAttribute('title', title);
+            videoPlayer.setAttribute('loop', loop);
+            videoPlayer.setAttribute('byline', byline);
+            videoPlayer.setAttribute('portrait', portrait);
         } else {
             videoPlayer = document.createElement('iframe');
             videoPlayer.setAttribute('src', src);
@@ -468,6 +488,10 @@ class VideosModal
         targetLink.setAttribute('data-videos-modal-controls', this.getLinkAttribute(duplicatedLink, 'controls'));
         targetLink.setAttribute('data-videos-modal-showinfo', this.getLinkAttribute(duplicatedLink, 'showinfo'));
         targetLink.setAttribute('data-videos-modal-allowfullscreen', this.getLinkAttribute(duplicatedLink, 'allowfullscreen'));
+        targetLink.setAttribute('data-videos-modal-title', this.getLinkAttribute(duplicatedLink, 'title'));
+        targetLink.setAttribute('data-videos-modal-byline', this.getLinkAttribute(duplicatedLink, 'byline'));
+        targetLink.setAttribute('data-videos-modal-portrait', this.getLinkAttribute(duplicatedLink, 'portrait'));
+        targetLink.setAttribute('data-videos-modal-loop', this.getLinkAttribute(duplicatedLink, 'loop'));
 
         return this;
     }
@@ -537,19 +561,11 @@ class VideosModal
             switch (provider) {
                 case 'youtube':
                 case 'dailymotion':
+                case 'vimeo':
                     return tarteaucitron.state[provider] !== false;
             }
         }
         return false;
-    }
-
-    /**
-     * Check if the youtube player is allowed by tarteaucitron js
-     *
-     * @returns {boolean}
-     */
-    isYoutubeAllowedByTarteAuCitron () {
-        return this.isTarteAuCitronEnabled() && this.options.tarteAuCitron.state.youtube !== false;
     }
 
     /**
