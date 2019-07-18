@@ -1,3 +1,4 @@
+/*jshint esversion: 6 */
 /**
  * Videos Modal Plugin https://github.com/hello-motto
  * 
@@ -14,21 +15,25 @@ class VideosModal
      * @returns {VideosModal}
      */
     constructor (options = {}) {
-        var that = this;
+        let that = this;
 
         this.onClick = function (event) {
             event.preventDefault();
 
-            var that = this;
+            let that = this;
 
-            var link = event.target;
+            let link = event.target;
 
-            var provider = link.getAttribute('data-videos-modal-provider');
+            let provider = link.getAttribute('data-videos-modal-provider');
 
-            if (! that.isTarteAuCitronEnabled() || that.isProviderAllowedByTarteAuCitron(provider)) {
-                that.open(link);
+            if (! that.hasNoProvider(link)) {
+                if (!that.isTarteAuCitronEnabled() || that.isProviderAllowedByTarteAuCitron(provider)) {
+                    that.open(link);
+                } else {
+                    that.options.tarteAuCitron.userInterface.openPanel();
+                }
             } else {
-                that.options.tarteAuCitron.userInterface.openPanel();
+                that.open(link);
             }
         };
 
@@ -46,14 +51,14 @@ class VideosModal
      * @returns {VideosModal}
      */
     init (options, reset) {
-        var that = this;
+        let that = this;
 
         if (reset !== true) {
             that.setDefaultOptions();
             that.setVideosModalContainer();
         }
 
-        for (var property in options) {
+        for (let property in options) {
             if (typeof that.options[property] !== 'undefined') {
                 that.options[property] = options[property];
             }
@@ -73,8 +78,8 @@ class VideosModal
      * @returns {VideosModal}
      */
     initEvents (reset) {
-        var that = this;
-        var i;
+        let that = this;
+        let i;
 
         if (reset !== true) {
             if (window.addEventListener) {
@@ -118,7 +123,7 @@ class VideosModal
      * @returns {VideosModal}
      */
     setLinks () {
-        var that = this;
+        let that = this;
 
         that.currentLink = 0;
 
@@ -136,11 +141,11 @@ class VideosModal
      * @returns {VideosModal}
      */
     reset () {
-        var that = this;
+        let that = this;
 
-        var links = that.links;
+        let links = that.links;
 
-        for (var i = 0; i < that.linksNumber; i++) {
+        for (let i = 0; i < that.linksNumber; i++) {
             links[i].removeEventListener('click', that.clickHandler);
         }
 
@@ -165,7 +170,7 @@ class VideosModal
         this.options.tarteAuCitron = null;
         this.options.links = '.videos-modal-link';
 
-        this.options.videos_provider = null;
+        this.options.videos_provider = 'null';
         this.options.videos_id = null;
         this.options.videos_width = null;
         this.options.videos_height = null;
@@ -177,7 +182,13 @@ class VideosModal
         this.options.videos_title = true;
         this.options.videos_byline = true;
         this.options.videos_portrait = true;
-        this.options.videos_loop = false;
+        this.options.videos_loop = 0;
+        this.options.videos_muted = 1;
+        this.options.videos_poster = '';
+        this.options.videos_preload = 'auto';
+        this.options.videos_mp4 = null;
+        this.options.videos_ogg = null;
+        this.options.videos_webm = null;
     }
 
     /**
@@ -187,26 +198,28 @@ class VideosModal
      * @returns {VideosModal}
      */
     open (link) {
-        var that = this;
-        var modal = document.getElementById('videos-modal');
-        var provider = link.getAttribute('data-videos-modal-provider');
+        let that = this;
+        let modal = document.getElementById('videos-modal');
+        let provider = link.getAttribute('data-videos-modal-provider');
         modal.classList.add('opened');
         modal.appendChild(that.getVideoTemplate(link));
 
-        if (that.isProviderAllowedByTarteAuCitron(provider)) {
-            that.options.tarteAuCitron.services[provider].js();
+        if (! that.hasNoProvider(link)) {
+            if (that.isProviderAllowedByTarteAuCitron(provider)) {
+                that.options.tarteAuCitron.services[provider].js();
+            }
         }
 
         if (that.options.navigate === true && that.linksNumber > 1) {
             that.currentLink = parseInt(link.getAttribute('data-videos-modal-order'));
-            var prevLink = that.createLink(that.getPrevLink());
+            let prevLink = that.createLink(that.getPrevLink());
             prevLink.setAttribute('id', 'videos-modal-prev-link');
             prevLink.addEventListener('click', function(event) {
                 event.preventDefault();
                 that.prev();
             });
             prevLink.insertAdjacentHTML('afterbegin', that.options.leftArrow);
-            var nextLink = that.createLink(that.getNextLink());
+            let nextLink = that.createLink(that.getNextLink());
             nextLink.setAttribute('id', 'videos-modal-next-link');
             nextLink.addEventListener('click', function(event) {
                 event.preventDefault();
@@ -227,9 +240,9 @@ class VideosModal
      * @returns {VideosModal}
      */
     close () {
-        var that = this;
+        let that = this;
 
-        var modal = document.getElementById('videos-modal');
+        let modal = document.getElementById('videos-modal');
 
         modal.classList.remove('opened');
 
@@ -247,7 +260,7 @@ class VideosModal
      * @returns {VideosModal}
      */
     prev () {
-        var link = document.getElementById('videos-modal-prev-link');
+        let link = document.getElementById('videos-modal-prev-link');
         this.updateNavigationLinks(link);
 
         return this;
@@ -260,7 +273,7 @@ class VideosModal
      * @returns {VideosModal}
      */
     next () {
-        var link = document.getElementById('videos-modal-next-link');
+        let link = document.getElementById('videos-modal-next-link');
         this.updateNavigationLinks(link);
 
         return this;
@@ -273,14 +286,14 @@ class VideosModal
      * @returns {VideosModal}
      */
     updateNavigationLinks (triggeredLink) {
-        var that = this;
-        var provider = triggeredLink.getAttribute('data-videos-modal-provider');
-        var modal = document.getElementById('videos-modal');
-        var prevLink = document.getElementById('videos-modal-prev-link');
-        var nextLink = document.getElementById('videos-modal-next-link');
-
-        if (! that.isTarteAuCitronEnabled() || that.isProviderAllowedByTarteAuCitron(provider)) {
-            var newVideoTemplate = that.getVideoTemplate(triggeredLink);
+        let that = this;
+        let provider = triggeredLink.getAttribute('data-videos-modal-provider');
+        let modal = document.getElementById('videos-modal');
+        let prevLink = document.getElementById('videos-modal-prev-link');
+        let nextLink = document.getElementById('videos-modal-next-link');
+        if (! that.isTarteAuCitronEnabled() || (that.hasNoProvider(triggeredLink)) ||
+            that.isProviderAllowedByTarteAuCitron(provider)) {
+            let newVideoTemplate = that.getVideoTemplate(triggeredLink);
 
             that.currentLink = parseInt(triggeredLink.getAttribute('data-videos-modal-order'));
 
@@ -337,7 +350,7 @@ class VideosModal
      * @returns {HTMLElementTagNameMap}
      */
     getPrevLink () {
-        var linkNumber = this.currentLink > 0 ? this.currentLink - 1 : this.linksNumber - 1;
+        let linkNumber = this.currentLink > 0 ? this.currentLink - 1 : this.linksNumber - 1;
         return this.getLink(linkNumber);
     }
 
@@ -347,7 +360,7 @@ class VideosModal
      * @returns {HTMLElementTagNameMap}
      */
     getNextLink () {
-        var linkNumber = this.currentLink === this.linksNumber - 1 ? 0 : this.currentLink + 1;
+        let linkNumber = this.currentLink === this.linksNumber - 1 ? 0 : this.currentLink + 1;
         return this.getLink(linkNumber);
     }
 
@@ -357,8 +370,8 @@ class VideosModal
      * @returns {VideosModal}
      */
     removeNavigationLinks() {
-        var modal = document.getElementById('videos-modal');
-        var links = modal.getElementsByTagName('a'), index;
+        let modal = document.getElementById('videos-modal');
+        let links = modal.getElementsByTagName('a'), index;
 
         for (index = links.length - 1; index >= 0; index--) {
             links[index].parentNode.removeChild(links[index]);
@@ -392,25 +405,32 @@ class VideosModal
      * @returns {HTMLElement}
      */
     getVideoTemplate (link) {
-        var id, src, videoPlayer;
-        var provider = this.setTemplateLinkValues(link, 'provider');
-        var width = this.setTemplateLinkValues(link, 'width', window.innerWidth * 0.7);
-        var height = this.setTemplateLinkValues(link, 'height', window.innerHeight * 0.7);
-        var autoplay = this.setTemplateLinkValues(link, 'autoplay');
-        var rel = this.setTemplateLinkValues(link, 'rel');
-        var controls = this.setTemplateLinkValues(link, 'controls');
-        var showinfo = this.setTemplateLinkValues(link, 'showinfo');
-        var allowfullscreen = this.setTemplateLinkValues(link, 'allowfullscreen');
-        var marginTop = parseInt((window.innerHeight - height) / 2) + 'px';
-        var title = this.setTemplateLinkValues(link, 'title');
-        var byline = this.setTemplateLinkValues(link, 'byline');
-        var portrait = this.setTemplateLinkValues(link, 'portrait');
-        var loop = this.setTemplateLinkValues(link, 'loop');
+        let id, src, videoPlayer;
+        let provider = this.setTemplateLinkValues(link, 'provider');
+        let width = this.setTemplateLinkValues(link, 'width', window.innerWidth * 0.7);
+        let height = this.setTemplateLinkValues(link, 'height', window.innerHeight * 0.7);
+        let autoplay = parseInt(this.setTemplateLinkValues(link, 'autoplay'));
+        let rel = this.setTemplateLinkValues(link, 'rel');
+        let controls = parseInt(this.setTemplateLinkValues(link, 'controls'));
+        let showinfo = parseInt(this.setTemplateLinkValues(link, 'showinfo'));
+        let allowfullscreen = this.setTemplateLinkValues(link, 'allowfullscreen');
+        let marginTop = parseInt((window.innerHeight - height) / 2) + 'px';
+        let title = this.setTemplateLinkValues(link, 'title');
+        let byline = this.setTemplateLinkValues(link, 'byline');
+        let portrait = this.setTemplateLinkValues(link, 'portrait');
+        let loop = this.setTemplateLinkValues(link, 'loop');
+        let muted = parseInt(this.setTemplateLinkValues(link, 'muted'));
+        let poster = this.setTemplateLinkValues(link, 'poster');
+        let preload = this.setTemplateLinkValues(link, 'preload');
 
         switch (provider) {
             case 'youtube':
                 id = this.setTemplateLinkValues(link, 'id', 'Q5fftru-t-g');
-                src = '//www.youtube.com/embed/' + id + '?&autoplay=' + autoplay;
+                src = '//www.youtube.com/embed/' + id + '?autoplay=' + autoplay;
+                src += '&loop=' + parseInt(loop);
+                src += '&controls=' + controls;
+                src += '&rel=' + rel;
+                src += '&showinfo=' + showinfo;
                 break;
             case 'dailymotion':
                 id = this.setTemplateLinkValues(link, 'id', 'xta4r');
@@ -424,30 +444,63 @@ class VideosModal
                 src += '&portrait=' + portrait;
                 src += '&loop=' + loop;
                 break;
+            default:
+                src = this.setTemplateLinkValues(link, 'id');
+                break;
         }
 
-        
-
-        if (this.isTarteAuCitronEnabled() && this.isProviderAllowedByTarteAuCitron(provider)) {
-            videoPlayer = document.createElement('div');
-            videoPlayer.classList.add(provider + '_player');
-            videoPlayer.setAttribute('videoID', id);
-            videoPlayer.setAttribute('rel', rel);
-            videoPlayer.setAttribute('controls', controls);
-            videoPlayer.setAttribute('showinfo', showinfo);
+        if (! this.hasNoProvider(link)) {
+            if (this.isTarteAuCitronEnabled() && this.isProviderAllowedByTarteAuCitron(provider)) {
+                videoPlayer = document.createElement('div');
+                videoPlayer.classList.add(provider + '_player');
+                videoPlayer.setAttribute('videoID', id);
+                videoPlayer.setAttribute('rel', rel);
+                videoPlayer.setAttribute('controls', controls);
+                videoPlayer.setAttribute('showinfo', showinfo);
+                videoPlayer.setAttribute('autoplay', autoplay);
+                if (provider === 'vimeo') {
+                    videoPlayer.setAttribute('title', title);
+                    videoPlayer.setAttribute('loop', loop);
+                    videoPlayer.setAttribute('byline', byline);
+                    videoPlayer.setAttribute('portrait', portrait);
+                }
+            } else {
+                videoPlayer = document.createElement('iframe');
+                videoPlayer.setAttribute('src', src);
+                videoPlayer.setAttribute('frameborder', '0');
+            }
             videoPlayer.setAttribute('allowfullscreen', allowfullscreen);
-            videoPlayer.setAttribute('autoplay', autoplay);
-            videoPlayer.setAttribute('title', title);
-            videoPlayer.setAttribute('loop', loop);
-            videoPlayer.setAttribute('byline', byline);
-            videoPlayer.setAttribute('portrait', portrait);
         } else {
-            videoPlayer = document.createElement('iframe');
-            videoPlayer.setAttribute('src', src);
-            videoPlayer.setAttribute('frameborder', 0);
+            videoPlayer = document.createElement('video');
+            videoPlayer.controls = controls;
+            videoPlayer.loop = loop;
+            videoPlayer.autoplay = autoplay;
+            videoPlayer.muted = muted;
+            videoPlayer.setAttribute('poster', poster);
+            videoPlayer.setAttribute('preload', preload);
+            let mp4 = this.setTemplateLinkValues(link, 'mp4');
+            let ogg = this.setTemplateLinkValues(link, 'ogg');
+            let webm = this.setTemplateLinkValues(link, 'webm');
+            if (mp4 !== 'null') {
+                let mp4Src = document.createElement('source');
+                mp4Src.setAttribute('type', 'video/mp4');
+                mp4Src.setAttribute('src', mp4);
+                videoPlayer.appendChild(mp4Src);
+            }
+            if (ogg !== 'null') {
+                let oggSrc = document.createElement('source');
+                oggSrc.setAttribute('type', 'video/ogg');
+                oggSrc.setAttribute('src', ogg);
+                videoPlayer.appendChild(oggSrc);
+            }
+            if (webm !== 'null') {
+                let webmSrc = document.createElement('source');
+                webmSrc.setAttribute('type', 'video/webm');
+                webmSrc.setAttribute('src', webm);
+                videoPlayer.appendChild(webmSrc);
+            }
         }
 
-        videoPlayer.setAttribute('allowfullscreen', allowfullscreen);
         videoPlayer.setAttribute('width', width);
         videoPlayer.setAttribute('height', height);
         videoPlayer.classList.add('videos_player');
@@ -464,7 +517,7 @@ class VideosModal
      * @returns {HTMLAnchorElement}
      */
     createLink (link) {
-        var newLink = document.createElement('a');
+        let newLink = document.createElement('a');
         this.editLink(newLink, link);
 
         return newLink;
@@ -492,6 +545,12 @@ class VideosModal
         targetLink.setAttribute('data-videos-modal-byline', this.getLinkAttribute(duplicatedLink, 'byline'));
         targetLink.setAttribute('data-videos-modal-portrait', this.getLinkAttribute(duplicatedLink, 'portrait'));
         targetLink.setAttribute('data-videos-modal-loop', this.getLinkAttribute(duplicatedLink, 'loop'));
+        targetLink.setAttribute('data-videos-modal-muted', this.getLinkAttribute(duplicatedLink, 'muted'));
+        targetLink.setAttribute('data-videos-modal-poster', this.getLinkAttribute(duplicatedLink, 'poster'));
+        targetLink.setAttribute('data-videos-modal-preload', this.getLinkAttribute(duplicatedLink, 'preload'));
+        targetLink.setAttribute('data-videos-modal-mp4', this.getLinkAttribute(duplicatedLink, 'mp4'));
+        targetLink.setAttribute('data-videos-modal-ogg', this.getLinkAttribute(duplicatedLink, 'ogg'));
+        targetLink.setAttribute('data-videos-modal-webm', this.getLinkAttribute(duplicatedLink, 'webm'));
 
         return this;
     }
@@ -502,8 +561,8 @@ class VideosModal
      * @returns {VideosModal}
      */
     setVideosModalContainer () {
-        var that = this;
-        var videosModalContainer = document.getElementById('videos-modal');
+        let that = this;
+        let videosModalContainer = document.getElementById('videos-modal');
         if (videosModalContainer === null) {
             videosModalContainer = document.createElement('div');
             videosModalContainer.setAttribute('id', 'videos-modal');
@@ -517,7 +576,7 @@ class VideosModal
 
         document.body.appendChild(videosModalContainer);
 
-        var modalBackground = document.createElement('div');
+        let modalBackground = document.createElement('div');
         modalBackground.setAttribute('id', 'videos-modal-background');
         videosModalContainer.appendChild(modalBackground);
 
@@ -530,8 +589,8 @@ class VideosModal
      * @returns {VideosModal}
      */
     removeVideoContainer() {
-        var modal = document.getElementById('videos-modal');
-        var videoContainer = modal.getElementsByClassName('videos_player'), index;
+        let modal = document.getElementById('videos-modal');
+        let videoContainer = modal.getElementsByClassName('videos_player'), index;
 
         for (index = videoContainer.length - 1; index >= 0; index--) {
             videoContainer[index].parentNode.removeChild(videoContainer[index]);
@@ -556,7 +615,7 @@ class VideosModal
      * @returns {boolean}
      */
     isProviderAllowedByTarteAuCitron (provider) {
-        var tarteaucitron = this.options.tarteAuCitron;
+        let tarteaucitron = this.options.tarteAuCitron;
         if (this.isTarteAuCitronEnabled()) {
             switch (provider) {
                 case 'youtube':
@@ -577,7 +636,7 @@ class VideosModal
      * @returns {string}
      */
     setTemplateLinkValues (link, parameter, defaultValue = null) {
-        var value;
+        let value;
         if (typeof link.getAttribute('data-videos-modal-' + parameter) !== 'undefined' &&
             link.getAttribute('data-videos-modal-' + parameter) !== null &&
             link.getAttribute('data-videos-modal-' + parameter) !== 'null') {
@@ -604,13 +663,25 @@ class VideosModal
     }
 
     /**
+     * Check if the video of the param link has some provider
+     *
+     * @param link
+     * @returns {boolean}
+     */
+    hasNoProvider (link) {
+        let provider = this.setTemplateLinkValues(link, 'provider');
+
+        return provider === 'null';
+    }
+
+    /**
      * Call functions triggered by keydown
      *
      * @param event
      */
     onkeydown (event) {
-        var that = this;
-        var modal = document.getElementById('videos-modal');
+        let that = this;
+        let modal = document.getElementById('videos-modal');
 
         if (modal.classList.contains('opened')) {
             switch (event.keyCode || event.which) {
