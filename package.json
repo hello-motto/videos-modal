@@ -1,6 +1,6 @@
 {
   "name": "hello-motto-videos-modal",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A little JS plugin for videos embed working with tarteaucitronjs",
   "main": "videos-modal.js",
   "directories": {

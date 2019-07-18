@@ -92,10 +92,21 @@ This is an optional container. If this not exists, it will be inserted at the en
 The `href` attribute won't be used (but is important if javascript is no enabled). The `data-videos-modal-*` attributes overwrite the by default parameters.
 
 ```html
+<!-- Youtube Provider Video -->
 <a href="https://www.youtube.com/watch?v=elbgmrH06Qg" class="videos-modal-link" data-videos-modal-provider="youtube"
     data-videos-modal-id="elbgmrH06Qg" data-videos-modal-autoplay="1" data-videos-modal-rel="0"
     data-videos-modal-controls="1" data-videos-modal-showinfo="1" data-videos-modal-allowfullscreen="1">
         First link
+</a>
+```
+
+To add some video media, don't use `data-videos-modal-id` but `data-videos-modal-` + format of the video. For example `data-videos-modal-ogg` for ogg format videos. 
+
+```html
+<!-- Video Media without provider -->
+<a href="./media/scrabble.mp4" class="play" data-videos-modal-mp4="./media/scrabble.mp4" data-videos-modal-autoplay="1"
+    data-videos-modal-controls="1" data-videos-modal-muted="0" data-videos-modal-loop="0">
+    Scrabble
 </a>
 ```
 
