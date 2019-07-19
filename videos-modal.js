@@ -2,7 +2,7 @@
 /**
  * Videos Modal Plugin https://github.com/hello-motto
  * 
- * Version 1.0.4
+ * Version 1.0.5
  * 
  * @author Jean-Baptiste MOTTO <contact@hello-motto.fr>
  */
@@ -118,6 +118,30 @@ class VideosModal
     }
 
     /**
+     * Return all the providers that are supported in this plugin
+     *
+     * @returns {string[]}
+     */
+    getSupportedProviders () {
+        return [
+            'youtube',
+            'dailymotion',
+            'vimeo',
+            'youtubeplaylist'
+        ];
+    }
+
+    /**
+     * Check if the parameter provider is supported
+     *
+     * @param provider
+     * @returns {boolean}
+     */
+    isProviderSupported (provider) {
+        return this.getSupportedProviders().indexOf(provider) > -1;
+    }
+
+    /**
      * Set the links by query selector
      *
      * @returns {VideosModal}
@@ -170,7 +194,7 @@ class VideosModal
         this.options.tarteAuCitron = null;
         this.options.links = '.videos-modal-link';
 
-        this.options.videos_provider = 'null';
+        this.options.videos_provider = 'media';
         this.options.videos_id = null;
         this.options.videos_width = null;
         this.options.videos_height = null;
@@ -291,6 +315,7 @@ class VideosModal
         let modal = document.getElementById('videos-modal');
         let prevLink = document.getElementById('videos-modal-prev-link');
         let nextLink = document.getElementById('videos-modal-next-link');
+        that.isProviderSupported(provider);
         if (! that.isTarteAuCitronEnabled() || (that.hasNoProvider(triggeredLink)) ||
             that.isProviderAllowedByTarteAuCitron(provider)) {
             let newVideoTemplate = that.getVideoTemplate(triggeredLink);
@@ -426,7 +451,15 @@ class VideosModal
         switch (provider) {
             case 'youtube':
                 id = this.setTemplateLinkValues(link, 'id', 'Q5fftru-t-g');
-                src = '//www.youtube.com/embed/' + id + '?autoplay=' + autoplay;
+                src = '//www.youtube-nocookie.com/embed/' + id + '?autoplay=' + autoplay;
+                src += '&loop=' + parseInt(loop);
+                src += '&controls=' + controls;
+                src += '&rel=' + rel;
+                src += '&showinfo=' + showinfo;
+                break;
+            case 'youtubeplaylist':
+                id = this.setTemplateLinkValues(link, 'id', 'PLDz1o5Ur8b7V56es-ci2_HdykvZPLNU95');
+                src = '//www.youtube-nocookie.com/embed/videoseries?list=' + id + '&autoplay=' + autoplay;
                 src += '&loop=' + parseInt(loop);
                 src += '&controls=' + controls;
                 src += '&rel=' + rel;
@@ -452,8 +485,8 @@ class VideosModal
         if (! this.hasNoProvider(link)) {
             if (this.isTarteAuCitronEnabled() && this.isProviderAllowedByTarteAuCitron(provider)) {
                 videoPlayer = document.createElement('div');
-                videoPlayer.classList.add(provider + '_player');
-                videoPlayer.setAttribute('videoID', id);
+                videoPlayer.classList.add((provider === 'youtubeplaylist' ? 'youtube_playlist' : provider) + '_player');
+                videoPlayer.setAttribute((provider === 'youtubeplaylist' ? 'playlistID' : 'videoID'), id);
                 videoPlayer.setAttribute('rel', rel);
                 videoPlayer.setAttribute('controls', controls);
                 videoPlayer.setAttribute('showinfo', showinfo);
@@ -527,30 +560,31 @@ class VideosModal
      * Set a link attributes from another link
      *
      * @param targetLink
-     * @param duplicatedLink
+     * @param link
      * @returns {VideosModal}
      */
-    editLink (targetLink, duplicatedLink) {
-        targetLink.setAttribute('data-videos-modal-order', duplicatedLink.getAttribute('data-videos-modal-order'));
-        targetLink.setAttribute('data-videos-modal-id', this.getLinkAttribute(duplicatedLink, 'id'));
-        targetLink.setAttribute('data-videos-modal-provider', this.getLinkAttribute(duplicatedLink, 'provider'));
-        targetLink.setAttribute('data-videos-modal-width', this.getLinkAttribute(duplicatedLink, 'width'));
-        targetLink.setAttribute('data-videos-modal-height', this.getLinkAttribute(duplicatedLink, 'height'));
-        targetLink.setAttribute('data-videos-modal-autoplay', this.getLinkAttribute(duplicatedLink, 'autoplay'));
-        targetLink.setAttribute('data-videos-modal-rel', this.getLinkAttribute(duplicatedLink, 'rel'));
-        targetLink.setAttribute('data-videos-modal-controls', this.getLinkAttribute(duplicatedLink, 'controls'));
-        targetLink.setAttribute('data-videos-modal-showinfo', this.getLinkAttribute(duplicatedLink, 'showinfo'));
-        targetLink.setAttribute('data-videos-modal-allowfullscreen', this.getLinkAttribute(duplicatedLink, 'allowfullscreen'));
-        targetLink.setAttribute('data-videos-modal-title', this.getLinkAttribute(duplicatedLink, 'title'));
-        targetLink.setAttribute('data-videos-modal-byline', this.getLinkAttribute(duplicatedLink, 'byline'));
-        targetLink.setAttribute('data-videos-modal-portrait', this.getLinkAttribute(duplicatedLink, 'portrait'));
-        targetLink.setAttribute('data-videos-modal-loop', this.getLinkAttribute(duplicatedLink, 'loop'));
-        targetLink.setAttribute('data-videos-modal-muted', this.getLinkAttribute(duplicatedLink, 'muted'));
-        targetLink.setAttribute('data-videos-modal-poster', this.getLinkAttribute(duplicatedLink, 'poster'));
-        targetLink.setAttribute('data-videos-modal-preload', this.getLinkAttribute(duplicatedLink, 'preload'));
-        targetLink.setAttribute('data-videos-modal-mp4', this.getLinkAttribute(duplicatedLink, 'mp4'));
-        targetLink.setAttribute('data-videos-modal-ogg', this.getLinkAttribute(duplicatedLink, 'ogg'));
-        targetLink.setAttribute('data-videos-modal-webm', this.getLinkAttribute(duplicatedLink, 'webm'));
+    editLink (targetLink, link) {
+        targetLink.setAttribute('data-videos-modal-order', link.getAttribute('data-videos-modal-order'));
+        targetLink.setAttribute('data-videos-modal-id', this.getLinkAttribute(link, 'id'));
+        targetLink.setAttribute('data-videos-modal-provider', this.getLinkAttribute(link, 'provider'));
+        targetLink.setAttribute('data-videos-modal-width', this.getLinkAttribute(link, 'width'));
+        targetLink.setAttribute('data-videos-modal-height', this.getLinkAttribute(link, 'height'));
+        targetLink.setAttribute('data-videos-modal-autoplay', this.getLinkAttribute(link, 'autoplay'));
+        targetLink.setAttribute('data-videos-modal-rel', this.getLinkAttribute(link, 'rel'));
+        targetLink.setAttribute('data-videos-modal-controls', this.getLinkAttribute(link, 'controls'));
+        targetLink.setAttribute('data-videos-modal-showinfo', this.getLinkAttribute(link, 'showinfo'));
+        targetLink.setAttribute('data-videos-modal-allowfullscreen',
+            this.getLinkAttribute(link, 'allowfullscreen'));
+        targetLink.setAttribute('data-videos-modal-title', this.getLinkAttribute(link, 'title'));
+        targetLink.setAttribute('data-videos-modal-byline', this.getLinkAttribute(link, 'byline'));
+        targetLink.setAttribute('data-videos-modal-portrait', this.getLinkAttribute(link, 'portrait'));
+        targetLink.setAttribute('data-videos-modal-loop', this.getLinkAttribute(link, 'loop'));
+        targetLink.setAttribute('data-videos-modal-muted', this.getLinkAttribute(link, 'muted'));
+        targetLink.setAttribute('data-videos-modal-poster', this.getLinkAttribute(link, 'poster'));
+        targetLink.setAttribute('data-videos-modal-preload', this.getLinkAttribute(link, 'preload'));
+        targetLink.setAttribute('data-videos-modal-mp4', this.getLinkAttribute(link, 'mp4'));
+        targetLink.setAttribute('data-videos-modal-ogg', this.getLinkAttribute(link, 'ogg'));
+        targetLink.setAttribute('data-videos-modal-webm', this.getLinkAttribute(link, 'webm'));
 
         return this;
     }
@@ -616,13 +650,8 @@ class VideosModal
      */
     isProviderAllowedByTarteAuCitron (provider) {
         let tarteaucitron = this.options.tarteAuCitron;
-        if (this.isTarteAuCitronEnabled()) {
-            switch (provider) {
-                case 'youtube':
-                case 'dailymotion':
-                case 'vimeo':
-                    return tarteaucitron.state[provider] !== false;
-            }
+        if (this.isTarteAuCitronEnabled() && this.isProviderSupported(provider)) {
+            return tarteaucitron.state[provider] !== false;
         }
         return false;
     }
@@ -669,9 +698,7 @@ class VideosModal
      * @returns {boolean}
      */
     hasNoProvider (link) {
-        let provider = this.setTemplateLinkValues(link, 'provider');
-
-        return provider === 'null';
+        return this.setTemplateLinkValues(link, 'provider') === 'media';
     }
 
     /**
