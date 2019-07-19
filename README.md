@@ -64,7 +64,7 @@ var videosModal = new VideosModal({
     tarteAuCitron: null, // if tarteaucitron is used, put the variable into it.
     links: '.videos-modal-link', // It is possible to set several selectors as a string.
     videos_id: null,
-    videos_provider: null,
+    videos_provider: 'media', // Default provider is direct media
     videos_width: null,
     videos_height: null,
     videos_autoplay: 0,
@@ -89,7 +89,7 @@ This is an optional container. If this not exists, it will be inserted at the en
 
 ### Add links for the embed videos
 
-The `href` attribute won't be used (but is important if javascript is no enabled). The `data-videos-modal-*` attributes overwrite the by default parameters.
+The `href` attribute won't be used (but is important if javascript is no enabled, or the user is using Internet Explorer. So pray for her/him). The `data-videos-modal-*` attributes overwrite the by default parameters.
 
 ```html
 <!-- Youtube Provider Video -->
@@ -124,11 +124,11 @@ This script should work with all modern browsers (so forget IE). If you see comp
 
 ## Available providers
 
-- Youtube
 - Dailymotion
 - Vimeo
+- Youtube
+- Youtube Playlist
 
 ## Next versions
 
-At present it only supports youtube, vimeo and dailymotion videos, but in the next versions it will work with other providers.<br>
 Notice that the `allowfullscreen` parameter [doesn't work with tarteaucitron (fr)](https://github.com/AmauriC/tarteaucitron.js/issues/273).
