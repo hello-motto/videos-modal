@@ -1,10 +1,18 @@
 {
   "name": "hello-motto-videos-modal",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "A little JS plugin for videos embed working with tarteaucitronjs",
-  "main": "videos-modal.js",
+  "main": "src/videos-modal.js",
   "directories": {
     "example": "examples"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "gulp-cli": "^2.2.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-csso": "^3.0.1",
+    "gulp-terser": "^1.2.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -29,7 +37,8 @@
   "author": "Jean-Baptiste MOTTO <contact@hello-motto.fr>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/hello-motto/videos-modal/issues"
+    "url": "https://github.com/hello-motto/videos-modal/issues",
+    "email": "contact@hello-motto.fr"
   },
   "homepage": "https://github.com/hello-motto/videos-modal#readme"
 }
