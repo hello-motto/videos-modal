@@ -61,6 +61,7 @@ var videosModal = new VideosModal({
     navigate: true,
     leftArrow: '', // Default icon VideosModal.getDefaultLeftArrow(), this needs that navigate is set as true
     rightArrow: '', // Default icon VideosModal.getDefaultRightArrow(), this needs that navigate is set as true
+    onlyLandscape: true, // if true, on mobile devices it should turn the video (it's adding a only-landscape class)
     tarteAuCitron: null, // if tarteaucitron is used, put the variable into it.
     links: '.videos-modal-link', // It is possible to set several selectors as a string.
     videos_id: null,
@@ -128,7 +129,3 @@ This script should work with all modern browsers (so forget IE). If you see comp
 - Vimeo
 - Youtube
 - Youtube Playlist
-
-## Next versions
-
-Notice that the `allowfullscreen` parameter [doesn't work with tarteaucitron (fr)](https://github.com/AmauriC/tarteaucitron.js/issues/273).
