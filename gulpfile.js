@@ -6,7 +6,7 @@ function jsMinify() {
     return src('src/videos-modal.js')
         .pipe(terser({
             "output": {
-                "comments": false
+                "comments": /((["'])(?:\\[\s\S]|.)*?\2|\/(?![*\/])(?:\\.|\[(?:\\.|.)\]|.)*?\/)|\/\/.*?$|\/\*[\s\S]*?\*\//gm
             },
             "ecma": 6
         }))

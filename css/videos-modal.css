@@ -116,12 +116,36 @@
 }
 
 @media (orientation: portrait) {
-    #videos-modal.opened .videos_player {
+    #videos-modal.opened.only-landscape .videos_player {
         transform: rotate(90deg);
     }
 
-    #videos-modal.opened .videos_player iframe {
-        margin-top: 10%;
+    #videos-modal.opened.only-landscape #videos-modal-prev-link,
+    #videos-modal.opened.only-landscape #videos-modal-next-link {
+        width: 6%;
+        top: 5%;
+        left: 47%;
+        -webkit-transform: rotate(90deg);
+        -moz-transform: rotate(90deg);
+        -ms-transform: rotate(90deg);
+        -o-transform: rotate(90deg);
+        transform: rotate(90deg);
+    }
+
+    #videos-modal.opened.only-landscape #videos-modal-next-link {
+        top: auto;
+        bottom: 5%;
+    }
+
+    #videos-modal.opened.only-landscape .videos_player {
+        top: auto;
+    }
+}
+
+@media (orientation: landscape) and (max-width: 768px) {
+    #videos-modal.opened #videos-modal-prev-link,
+    #videos-modal.opened #videos-modal-next-link {
+        width: 4%;
     }
 }
 /** END YOUTUBE MODAL **/

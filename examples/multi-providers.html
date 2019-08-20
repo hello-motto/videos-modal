@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <link rel="stylesheet" href="../build/videos-modal.min.css">
+        <link rel="stylesheet" href="../css/videos-modal.css">
         <title>Videos Modal Example</title>
     </head>
     <body style="background: green">
@@ -84,6 +84,7 @@
             var videosModal = new VideosModal({
                 links: 'a.play',
                 tarteAuCitron: tarteaucitron,
+                onlyLandscape: false
             });
             var itoura2 = '<br>' +
                 '<a href="https://www.dailymotion.com/video/xta4r" class="play" data-videos-modal-provider="dailymotion" ' +
