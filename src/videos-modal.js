@@ -2,7 +2,7 @@
 /**
  * Videos Modal Plugin https://github.com/hello-motto
  * 
- * Version 1.0.6
+ * Version 1.0.7
  * 
  * @author Jean-Baptiste MOTTO <contact@hello-motto.fr>
  */
@@ -55,13 +55,16 @@ class VideosModal
 
         if (reset !== true) {
             that.setDefaultOptions();
-            that.setVideosModalContainer();
         }
 
         for (let property in options) {
             if (typeof that.options[property] !== 'undefined') {
                 that.options[property] = options[property];
             }
+        }
+
+        if (reset !== true) {
+            that.setVideosModalContainer();
         }
 
         that.setLinks();
@@ -193,6 +196,7 @@ class VideosModal
         this.options.rightArrow = this.options.navigate === true ? this.getDefaultRightArrow() : null;
         this.options.tarteAuCitron = null;
         this.options.links = '.videos-modal-link';
+        this.options.onlyLandscape = true;
 
         this.options.videos_provider = 'media';
         this.options.videos_id = null;
@@ -430,7 +434,7 @@ class VideosModal
      * @returns {HTMLElement}
      */
     getVideoTemplate (link) {
-        let id, src, videoPlayer;
+        let id, src, marginTop, videoPlayer, mp4, ogg, webm, mp4Src, oggSrc, webmSrc;
         let provider = this.setTemplateLinkValues(link, 'provider');
         let width = this.setTemplateLinkValues(link, 'width', window.innerWidth * 0.7);
         let height = this.setTemplateLinkValues(link, 'height', window.innerHeight * 0.7);
@@ -439,7 +443,6 @@ class VideosModal
         let controls = parseInt(this.setTemplateLinkValues(link, 'controls'));
         let showinfo = parseInt(this.setTemplateLinkValues(link, 'showinfo'));
         let allowfullscreen = this.setTemplateLinkValues(link, 'allowfullscreen');
-        let marginTop = parseInt((window.innerHeight - height) / 2) + 'px';
         let title = this.setTemplateLinkValues(link, 'title');
         let byline = this.setTemplateLinkValues(link, 'byline');
         let portrait = this.setTemplateLinkValues(link, 'portrait');
@@ -511,31 +514,39 @@ class VideosModal
             videoPlayer.muted = muted;
             videoPlayer.setAttribute('poster', poster);
             videoPlayer.setAttribute('preload', preload);
-            let mp4 = this.setTemplateLinkValues(link, 'mp4');
-            let ogg = this.setTemplateLinkValues(link, 'ogg');
-            let webm = this.setTemplateLinkValues(link, 'webm');
+            mp4 = this.setTemplateLinkValues(link, 'mp4');
+            ogg = this.setTemplateLinkValues(link, 'ogg');
+            webm = this.setTemplateLinkValues(link, 'webm');
             if (mp4 !== 'null') {
-                let mp4Src = document.createElement('source');
+                mp4Src = document.createElement('source');
                 mp4Src.setAttribute('type', 'video/mp4');
                 mp4Src.setAttribute('src', mp4);
                 videoPlayer.appendChild(mp4Src);
             }
             if (ogg !== 'null') {
-                let oggSrc = document.createElement('source');
+                oggSrc = document.createElement('source');
                 oggSrc.setAttribute('type', 'video/ogg');
                 oggSrc.setAttribute('src', ogg);
                 videoPlayer.appendChild(oggSrc);
             }
             if (webm !== 'null') {
-                let webmSrc = document.createElement('source');
+                webmSrc = document.createElement('source');
                 webmSrc.setAttribute('type', 'video/webm');
                 webmSrc.setAttribute('src', webm);
                 videoPlayer.appendChild(webmSrc);
             }
         }
 
-        videoPlayer.setAttribute('width', width);
-        videoPlayer.setAttribute('height', height);
+        if (this.options.onlyLandscape === true
+            && window.matchMedia("(orientation: portrait)").matches) {
+            videoPlayer.setAttribute('width', height);
+            videoPlayer.setAttribute('height', width);
+            marginTop = parseInt((window.innerHeight - width) / 2) + 'px';
+        } else {
+            videoPlayer.setAttribute('width', width);
+            videoPlayer.setAttribute('height', height);
+            marginTop = parseInt((window.innerHeight - height) / 2) + 'px';
+        }
         videoPlayer.classList.add('videos_player');
 
         videoPlayer.style.marginTop = marginTop;
@@ -606,6 +617,9 @@ class VideosModal
         }
         if (that.options.loading === true) {
             videosModalContainer.insertAdjacentHTML('beforeend', that.getLoaderIcon());
+        }
+        if (that.options.onlyLandscape === true) {
+            videosModalContainer.classList.add('only-landscape');
         }
 
         document.body.appendChild(videosModalContainer);
