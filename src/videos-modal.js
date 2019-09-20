@@ -67,11 +67,11 @@ class VideosModal
         if (reset !== true) {
             if (window.addEventListener) {
                 window.addEventListener('keydown', function (event) {
-                    that.onkeydown(event);
+                    that.onKeyDown(event);
                 }, false);
             } else {
                 window.attachEvent('onkeydown', function (event) {
-                    that.onkeydown(event);
+                    that.onKeyDown(event);
                 });
             }
 
@@ -726,7 +726,7 @@ class VideosModal
      *
      * @param event
      */
-    onkeydown (event) {
+    onKeyDown (event) {
         let that = this;
         let modal = document.getElementById('videos-modal');
 
