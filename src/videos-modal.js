@@ -2,7 +2,7 @@
 /**
  * Videos Modal Plugin https://github.com/hello-motto
  * 
- * Version 1.0.7
+ * Version 1.0.8
  * 
  * @author Jean-Baptiste MOTTO <contact@hello-motto.fr>
  */
@@ -16,26 +16,6 @@ class VideosModal
      */
     constructor (options = {}) {
         let that = this;
-
-        this.onClick = function (event) {
-            event.preventDefault();
-
-            let that = this;
-
-            let link = event.target;
-
-            let provider = link.getAttribute('data-videos-modal-provider');
-
-            if (! that.hasNoProvider(link)) {
-                if (!that.isTarteAuCitronEnabled() || that.isProviderAllowedByTarteAuCitron(provider)) {
-                    that.open(link);
-                } else {
-                    that.options.tarteAuCitron.userInterface.openPanel();
-                }
-            } else {
-                that.open(link);
-            }
-        };
 
         that.clickHandler = that.onClick.bind(that);
 
@@ -87,11 +67,11 @@ class VideosModal
         if (reset !== true) {
             if (window.addEventListener) {
                 window.addEventListener('keydown', function (event) {
-                    that.onkeydown(event);
+                    that.onKeyDown(event);
                 }, false);
             } else {
                 window.attachEvent('onkeydown', function (event) {
-                    that.onkeydown(event);
+                    that.onKeyDown(event);
                 });
             }
 
@@ -118,6 +98,32 @@ class VideosModal
         }
 
         return this;
+    }
+
+    /**
+     * This is what happens when the click on link is triggered
+     *
+     * @param event
+     */
+    onClick (event) {
+        event.preventDefault();
+
+        let that = this;
+
+        // This can not be the event.target if the link has children nodes
+        let link = event.currentTarget;
+
+        let provider = link.getAttribute('data-videos-modal-provider');
+
+        if (! that.hasNoProvider(link)) {
+            if (!that.isTarteAuCitronEnabled() || that.isProviderAllowedByTarteAuCitron(provider)) {
+                that.open(link);
+            } else {
+                that.options.tarteAuCitron.userInterface.openPanel();
+            }
+        } else {
+            that.open(link);
+        }
     }
 
     /**
@@ -720,7 +726,7 @@ class VideosModal
      *
      * @param event
      */
-    onkeydown (event) {
+    onKeyDown (event) {
         let that = this;
         let modal = document.getElementById('videos-modal');
 
