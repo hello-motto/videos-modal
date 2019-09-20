@@ -17,26 +17,6 @@ class VideosModal
     constructor (options = {}) {
         let that = this;
 
-        this.onClick = function (event) {
-            event.preventDefault();
-
-            let that = this;
-
-            let link = event.target;
-
-            let provider = link.getAttribute('data-videos-modal-provider');
-
-            if (! that.hasNoProvider(link)) {
-                if (!that.isTarteAuCitronEnabled() || that.isProviderAllowedByTarteAuCitron(provider)) {
-                    that.open(link);
-                } else {
-                    that.options.tarteAuCitron.userInterface.openPanel();
-                }
-            } else {
-                that.open(link);
-            }
-        };
-
         that.clickHandler = that.onClick.bind(that);
 
         that.init(options, false);
@@ -118,6 +98,32 @@ class VideosModal
         }
 
         return this;
+    }
+
+    /**
+     * This is what happens when the click on link is triggered
+     *
+     * @param event
+     */
+    onClick (event) {
+        event.preventDefault();
+
+        let that = this;
+
+        // This can not be the event.target if the link has children nodes
+        let link = event.currentTarget;
+
+        let provider = link.getAttribute('data-videos-modal-provider');
+
+        if (! that.hasNoProvider(link)) {
+            if (!that.isTarteAuCitronEnabled() || that.isProviderAllowedByTarteAuCitron(provider)) {
+                that.open(link);
+            } else {
+                that.options.tarteAuCitron.userInterface.openPanel();
+            }
+        } else {
+            that.open(link);
+        }
     }
 
     /**
