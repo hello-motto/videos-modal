@@ -442,8 +442,8 @@ class VideosModal
     getVideoTemplate (link) {
         let id, src, marginTop, videoPlayer, mp4, ogg, webm, mp4Src, oggSrc, webmSrc;
         let provider = this.setTemplateLinkValues(link, 'provider');
-        let width = this.setTemplateLinkValues(link, 'width', window.innerWidth * 0.7);
-        let height = this.setTemplateLinkValues(link, 'height', window.innerHeight * 0.7);
+        let width = this.setTemplateLinkValues(link, 'width', (window.innerWidth * 0.7));
+        let height = this.setTemplateLinkValues(link, 'height', (window.innerHeight * 0.7));
         let autoplay = parseInt(this.setTemplateLinkValues(link, 'autoplay'));
         let rel = this.setTemplateLinkValues(link, 'rel');
         let controls = parseInt(this.setTemplateLinkValues(link, 'controls'));
@@ -460,31 +460,31 @@ class VideosModal
         switch (provider) {
             case 'youtube':
                 id = this.setTemplateLinkValues(link, 'id', 'Q5fftru-t-g');
-                src = '//www.youtube-nocookie.com/embed/' + id + '?autoplay=' + autoplay;
-                src += '&loop=' + parseInt(loop);
-                src += '&controls=' + controls;
-                src += '&rel=' + rel;
-                src += '&showinfo=' + showinfo;
+                src = `//www.youtube-nocookie.com/embed/${id}?autoplay=${autoplay}`;
+                src += `&loop=${loop}`;
+                src += `&controls=${controls}`;
+                src += `&rel=${rel}`;
+                src += `&showinfo=${showinfo}`;
                 break;
             case 'youtubeplaylist':
                 id = this.setTemplateLinkValues(link, 'id', 'PLDz1o5Ur8b7V56es-ci2_HdykvZPLNU95');
-                src = '//www.youtube-nocookie.com/embed/videoseries?list=' + id + '&autoplay=' + autoplay;
-                src += '&loop=' + parseInt(loop);
-                src += '&controls=' + controls;
-                src += '&rel=' + rel;
-                src += '&showinfo=' + showinfo;
+                src = `//www.youtube-nocookie.com/embed/videoseries?list=${id}&autoplay=${autoplay}`;
+                src += `&loop=${loop}`;
+                src += `&controls=${controls}`;
+                src += `&rel=${rel}`;
+                src += `&showinfo=${showinfo}`;
                 break;
             case 'dailymotion':
                 id = this.setTemplateLinkValues(link, 'id', 'xta4r');
-                src = '//www.dailymotion.com/embed/video/' + id + '?info=' + showinfo + '&autoPlay=' + autoplay;
+                src = `//www.dailymotion.com/embed/video/${id}?info=${showinfo}&autoPlay=${autoplay}`;
                 break;
             case 'vimeo':
                 id = this.setTemplateLinkValues(link, 'id', '210806913');
-                src = '//player.vimeo.com/video/' + id + '?autoplay' + autoplay;
-                src += '&title=' + title;
-                src += '&byline=' + byline;
-                src += '&portrait=' + portrait;
-                src += '&loop=' + loop;
+                src = `//player.vimeo.com/video/${id}?autoplay=${autoplay}`;
+                src += `&title=${title}`;
+                src += `&byline=${byline}`;
+                src += `&portrait=${portrait}`;
+                src += `&loop=${loop}`;
                 break;
             default:
                 src = this.setTemplateLinkValues(link, 'id');
@@ -494,8 +494,8 @@ class VideosModal
         if (! this.hasNoProvider(link)) {
             if (this.isTarteAuCitronEnabled() && this.isProviderAllowedByTarteAuCitron(provider)) {
                 videoPlayer = document.createElement('div');
-                videoPlayer.classList.add((provider === 'youtubeplaylist' ? 'youtube_playlist' : provider) + '_player');
-                videoPlayer.setAttribute((provider === 'youtubeplaylist' ? 'playlistID' : 'videoID'), id);
+                videoPlayer.classList.add(`${provider === 'youtubeplaylist' ? 'youtube_playlist' : provider}_player`);
+                videoPlayer.setAttribute(`${provider === 'youtubeplaylist' ? 'playlistID' : 'videoID'}`, id);
                 videoPlayer.setAttribute('rel', rel);
                 videoPlayer.setAttribute('controls', controls);
                 videoPlayer.setAttribute('showinfo', showinfo);
@@ -543,19 +543,19 @@ class VideosModal
             }
         }
 
-        if (this.options.onlyLandscape === true
-            && window.matchMedia("(orientation: portrait)").matches) {
+        if (this.options.onlyLandscape === true &&
+            window.matchMedia('(orientation: portrait)').matches) {
             videoPlayer.setAttribute('width', height);
             videoPlayer.setAttribute('height', width);
-            marginTop = parseInt((window.innerHeight - width) / 2) + 'px';
+            marginTop = parseInt((window.innerHeight - width) / 2);
         } else {
             videoPlayer.setAttribute('width', width);
             videoPlayer.setAttribute('height', height);
-            marginTop = parseInt((window.innerHeight - height) / 2) + 'px';
+            marginTop = parseInt((window.innerHeight - height) / 2);
         }
         videoPlayer.classList.add('videos_player');
 
-        videoPlayer.style.marginTop = marginTop;
+        videoPlayer.style.marginTop = `${marginTop}px`;
 
         return videoPlayer;
     }
@@ -686,12 +686,11 @@ class VideosModal
      */
     setTemplateLinkValues (link, parameter, defaultValue = null) {
         let value;
-        if (typeof link.getAttribute('data-videos-modal-' + parameter) !== 'undefined' &&
-            link.getAttribute('data-videos-modal-' + parameter) !== null &&
-            link.getAttribute('data-videos-modal-' + parameter) !== 'null') {
-            value = link.getAttribute('data-videos-modal-' + parameter);
-        } else if (this.options['videos_' + parameter] !== null) {
-            value = this.options['videos_' + parameter];
+        let parameterValue = link.getAttribute(`data-videos-modal-${parameter}`);
+        if (typeof parameterValue !== 'undefined' && parameterValue !== null && parameterValue !== 'null') {
+            value = parameterValue;
+        } else if (this.options[`videos_${parameter}`] !== null) {
+            value = this.options[`videos_${parameter}`];
         } else {
             value = defaultValue;
         }
@@ -707,8 +706,8 @@ class VideosModal
      * @returns {string}
      */
     getLinkAttribute (link, attribute) {
-        return link.getAttribute('data-videos-modal-' + attribute) !== null ?
-            link.getAttribute('data-videos-modal-' + attribute) : this.options['videos_' + attribute];
+        return link.getAttribute(`data-videos-modal-${attribute}`) !== null ?
+            link.getAttribute(`data-videos-modal-${attribute}`) : this.options[`videos_${attribute}`];
     }
 
     /**
@@ -758,32 +757,32 @@ class VideosModal
      * @returns {string}
      */
     getDefaultLoaderIcon () {
-        return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="videos-modal-loader">' +
-            '<rect x="47" y="22.5" rx="9.4" ry="4.5" width="6" height="15" fill="#fff" transform="rotate(0 50 50)">' +
-            '<animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.875s" repeatCount="indefinite"/>' +
-            '</rect>' +
-            '<rect x="47" y="22.5" rx="9.4" ry="4.5" width="6" height="15" fill="#fff" transform="rotate(45 50 50)">' +
-            '<animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.75s" repeatCount="indefinite"/>' +
-            '</rect>' +
-            '<rect x="47" y="22.5" rx="9.4" ry="4.5" width="6" height="15" fill="#fff" transform="rotate(90 50 50)">' +
-            '<animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.625s" repeatCount="indefinite"/>' +
-            '</rect>' +
-            '<rect x="47" y="22.5" rx="9.4" ry="4.5" width="6" height="15" fill="#fff" transform="rotate(135 50 50)">' +
-            '<animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.5s" repeatCount="indefinite"/>' +
-            '</rect>' +
-            '<rect x="47" y="22.5" rx="9.4" ry="4.5" width="6" height="15" fill="#fff" transform="rotate(180 50 50)">' +
-            '<animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.375s" repeatCount="indefinite"/>' +
-            '</rect>' +
-            '<rect x="47" y="22.5" rx="9.4" ry="4.5" width="6" height="15" fill="#fff" transform="rotate(225 50 50)">' +
-            '<animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.25s" repeatCount="indefinite"/>' +
-            '</rect>' +
-            '<rect x="47" y="22.5" rx="9.4" ry="4.5" width="6" height="15" fill="#fff" transform="rotate(270 50 50)">' +
-            '<animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.125s" repeatCount="indefinite"/>' +
-            '</rect>' +
-            '<rect x="47" y="22.5" rx="9.4" ry="4.5" width="6" height="15" fill="#fff" transform="rotate(315 50 50)">' +
-            '<animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="0s" repeatCount="indefinite"/>' +
-            '</rect>' +
-            '</svg>';
+        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="videos-modal-loader">
+    <rect x="47" y="22.5" rx="9.4" ry="4.5" width="6" height="15" fill="#fff" transform="rotate(0 50 50)">
+        <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.875s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="47" y="22.5" rx="9.4" ry="4.5" width="6" height="15" fill="#fff" transform="rotate(45 50 50)">
+        <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.75s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="47" y="22.5" rx="9.4" ry="4.5" width="6" height="15" fill="#fff" transform="rotate(90 50 50)">
+        <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.625s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="47" y="22.5" rx="9.4" ry="4.5" width="6" height="15" fill="#fff" transform="rotate(135 50 50)">
+        <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.5s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="47" y="22.5" rx="9.4" ry="4.5" width="6" height="15" fill="#fff" transform="rotate(180 50 50)">
+        <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.375s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="47" y="22.5" rx="9.4" ry="4.5" width="6" height="15" fill="#fff" transform="rotate(225 50 50)">
+        <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.25s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="47" y="22.5" rx="9.4" ry="4.5" width="6" height="15" fill="#fff" transform="rotate(270 50 50)">
+        <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.125s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="47" y="22.5" rx="9.4" ry="4.5" width="6" height="15" fill="#fff" transform="rotate(315 50 50)">
+        <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="0s" repeatCount="indefinite"/>
+    </rect>
+</svg>`;
     }
 
     /**
@@ -792,17 +791,17 @@ class VideosModal
      * @returns {string}
      */
     getDefaultCloseIcon () {
-        return '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" id="videos-modal-close"' +
-            'viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve">' +
-            '<path fill="#999" d="M30.3448276,31.4576271 C29.9059965,31.4572473 29.4852797,31.2855701 29.1751724,30.980339 ' +
-            'L0.485517241,2.77694915 C-0.122171278,2.13584324 -0.104240278,1.13679247 0.52607603,0.517159487 C1.15639234,' +
-            '-0.102473494 2.17266813,-0.120100579 2.82482759,0.477288136 L31.5144828,28.680678 C31.9872448,29.1460053 ' +
-            '32.1285698,29.8453523 31.8726333,30.4529866 C31.6166968,31.0606209 31.0138299,31.4570487 30.3448276,31.4576271 Z" />' +
-            '<path fill="#999" d="M1.65517241,31.4576271 C0.986170142,31.4570487 0.383303157,31.0606209 0.127366673,30.4529866 ' +
-            'C-0.12856981,29.8453523 0.0127551942,29.1460053 0.485517241,28.680678 L29.1751724,0.477288136 C29.8273319,' +
-            '-0.120100579 30.8436077,-0.102473494 31.473924,0.517159487 C32.1042403,1.13679247 32.1221713,2.13584324 ' +
-            '31.5144828,2.77694915 L2.82482759,30.980339 C2.51472031,31.2855701 2.09400353,31.4572473 1.65517241,31.4576271 Z" />' +
-            '</svg>';
+        return `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" id="videos-modal-close" viewBox="0 0 32 32"
+    style="enable-background:new 0 0 32 32;" xml:space="preserve">
+    <path fill="#999" d="M30.3448276,31.4576271 C29.9059965,31.4572473 29.4852797,31.2855701 29.1751724,30.980339
+        L0.485517241,2.77694915 C-0.122171278,2.13584324 -0.104240278,1.13679247 0.52607603,0.517159487 C1.15639234,
+        -0.102473494 2.17266813,-0.120100579 2.82482759,0.477288136 L31.5144828,28.680678 C31.9872448,29.1460053
+        32.1285698,29.8453523 31.8726333,30.4529866 C31.6166968,31.0606209 31.0138299,31.4570487 30.3448276,31.4576271 Z" />
+    <path fill="#999" d="M1.65517241,31.4576271 C0.986170142,31.4570487 0.383303157,31.0606209 0.127366673,30.4529866
+        C-0.12856981,29.8453523 0.0127551942,29.1460053 0.485517241,28.680678 L29.1751724,0.477288136 C29.8273319,
+        -0.120100579 30.8436077,-0.102473494 31.473924,0.517159487 C32.1042403,1.13679247 32.1221713,2.13584324
+        31.5144828,2.77694915 L2.82482759,30.980339 C2.51472031,31.2855701 2.09400353,31.4572473 1.65517241,31.4576271 Z" />
+</svg>`;
     }
 
     /**
@@ -811,11 +810,11 @@ class VideosModal
      * @returns {string}
      */
     getDefaultLeftArrow () {
-        return '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" class="videos-modal-left-arrow" ' +
-            'viewBox="0 0 11.4 20" style="enable-background:new 0 0 11.4 20;" xml:space="preserve">' +
-            '<path fill="#999" d="M0.4,9L9,0.4c0.5-0.5,1.4-0.5,2,0c0.5,0.5,0.5,1.4,0,2L3.4,10l7.6,7.6c0.5,0.5,0.5,1.4,0,2 ' +
-            'c-0.5,0.5-1.4,0.5-2,0L0.4,11C-0.2,10.4-0.2,9.6,0.4,9L0.4,9L0.4,9z"/>' +
-            '</svg>';
+        return `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" class="videos-modal-left-arrow"
+    viewBox="0 0 11.4 20" style="enable-background:new 0 0 11.4 20;" xml:space="preserve">
+    <path fill="#999" d="M0.4,9L9,0.4c0.5-0.5,1.4-0.5,2,0c0.5,0.5,0.5,1.4,0,2L3.4,10l7.6,7.6c0.5,0.5,0.5,1.4,0,2
+        c-0.5,0.5-1.4,0.5-2,0L0.4,11C-0.2,10.4-0.2,9.6,0.4,9L0.4,9L0.4,9z"/>
+</svg>`;
     }
 
     /**
@@ -824,10 +823,10 @@ class VideosModal
      * @returns {string}
      */
     getDefaultRightArrow () {
-        return '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" class="videos-modal-right-arrow" ' +
-            'viewBox="0 0 11.4 20" style="enable-background:new 0 0 11.4 20;" xml:space="preserve">' +
-            '<path fill="#999" d="M11,11l-8.6,8.6c-0.5,0.5-1.4,0.5-2,0c-0.5-0.5-0.5-1.4,0-2L8,10L0.4,2.4c-0.5-0.5-0.5-1.4,0-2 ' +
-            'c0.5-0.5,1.4-0.5,2,0L11,9C11.5,9.6,11.5,10.4,11,11C11,11,11,11,11,11L11,11z"/>' +
-            '</svg>';
+        return `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" class="videos-modal-right-arrow"
+    viewBox="0 0 11.4 20" style="enable-background:new 0 0 11.4 20;" xml:space="preserve">
+    <path fill="#999" d="M11,11l-8.6,8.6c-0.5,0.5-1.4,0.5-2,0c-0.5-0.5-0.5-1.4,0-2L8,10L0.4,2.4c-0.5-0.5-0.5-1.4,0-2
+    c0.5-0.5,1.4-0.5,2,0L11,9C11.5,9.6,11.5,10.4,11,11C11,11,11,11,11,11L11,11z"/>
+</svg>`;
     }
 }
