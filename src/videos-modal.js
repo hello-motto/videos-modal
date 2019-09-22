@@ -1,8 +1,7 @@
-/*jshint esversion: 6 */
 /**
  * Videos Modal Plugin https://github.com/hello-motto
  * 
- * Version 1.0.8
+ * Version 1.0.9
  * 
  * @author Jean-Baptiste MOTTO <contact@hello-motto.fr>
  */
