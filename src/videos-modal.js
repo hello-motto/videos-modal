@@ -1,7 +1,7 @@
 /**
  * Videos Modal Plugin https://github.com/hello-motto
  * 
- * Version 1.0.9
+ * Version 1.0.10
  * 
  * @author Jean-Baptiste MOTTO <contact@hello-motto.fr>
  */
@@ -112,17 +112,7 @@ class VideosModal
         // This can not be the event.target if the link has children nodes
         let link = event.currentTarget;
 
-        let provider = link.getAttribute('data-videos-modal-provider');
-
-        if (! that.hasNoProvider(link)) {
-            if (!that.isTarteAuCitronEnabled() || that.isProviderAllowedByTarteAuCitron(provider)) {
-                that.open(link);
-            } else {
-                that.options.tarteAuCitron.userInterface.openPanel();
-            }
-        } else {
-            that.open(link);
-        }
+        that.open(link);
     }
 
     /**
@@ -212,6 +202,7 @@ class VideosModal
         this.options.videos_controls = 0;
         this.options.videos_showinfo = 0;
         this.options.videos_allowfullscreen = 0;
+        this.options.videos_theme = 'dark';
         this.options.videos_title = true;
         this.options.videos_byline = true;
         this.options.videos_portrait = true;
@@ -232,36 +223,41 @@ class VideosModal
      */
     open (link) {
         let that = this;
-        let modal = document.getElementById('videos-modal');
-        let provider = link.getAttribute('data-videos-modal-provider');
-        modal.classList.add('opened');
-        modal.appendChild(that.getVideoTemplate(link));
+        let modal = that.getVideosModalContainer();
+        let provider = that.getLinkProvider(link);
 
-        if (! that.hasNoProvider(link)) {
-            if (that.isProviderAllowedByTarteAuCitron(provider)) {
-                that.options.tarteAuCitron.services[provider].js();
+        if (that.isTarteAuCitronEnabled() && ! that.isProviderAllowedByTarteAuCitron(provider)) {
+            that.options.tarteAuCitron.userInterface.openPanel();
+        } else {
+            modal.classList.add('opened');
+            modal.appendChild(that.getVideoTemplate(link));
+
+            if (! that.hasNoProvider(link)) {
+                if (that.isProviderAllowedByTarteAuCitron(provider)) {
+                    that.options.tarteAuCitron.services[provider].js();
+                }
             }
-        }
 
-        if (that.options.navigate === true && that.linksNumber > 1) {
-            that.currentLink = parseInt(link.getAttribute('data-videos-modal-order'));
-            let prevLink = that.createLink(that.getPrevLink());
-            prevLink.setAttribute('id', 'videos-modal-prev-link');
-            prevLink.addEventListener('click', function(event) {
-                event.preventDefault();
-                that.prev();
-            });
-            prevLink.insertAdjacentHTML('afterbegin', that.options.leftArrow);
-            let nextLink = that.createLink(that.getNextLink());
-            nextLink.setAttribute('id', 'videos-modal-next-link');
-            nextLink.addEventListener('click', function(event) {
-                event.preventDefault();
-                that.next();
+            if (that.options.navigate === true && that.linksNumber > 1) {
+                that.currentLink = parseInt(link.getAttribute('data-videos-modal-order'));
+                let prevLink = that.createLink(that.getPrevLink());
+                prevLink.setAttribute('id', 'videos-modal-prev-link');
+                prevLink.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    that.prev();
+                });
+                prevLink.insertAdjacentHTML('afterbegin', that.options.leftArrow);
+                let nextLink = that.createLink(that.getNextLink());
+                nextLink.setAttribute('id', 'videos-modal-next-link');
+                nextLink.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    that.next();
 
-            });
-            nextLink.insertAdjacentHTML('afterbegin', that.options.rightArrow);
-            modal.appendChild(prevLink);
-            modal.appendChild(nextLink);
+                });
+                nextLink.insertAdjacentHTML('afterbegin', that.options.rightArrow);
+                modal.appendChild(prevLink);
+                modal.appendChild(nextLink);
+            }
         }
 
         return this;
@@ -293,7 +289,8 @@ class VideosModal
      * @returns {VideosModal}
      */
     prev () {
-        let link = document.getElementById('videos-modal-prev-link');
+        let that = this;
+        let link = that.getNavigationPrevLink();
         this.updateNavigationLinks(link);
 
         return this;
@@ -306,7 +303,8 @@ class VideosModal
      * @returns {VideosModal}
      */
     next () {
-        let link = document.getElementById('videos-modal-next-link');
+        let that = this;
+        let link = that.getNavigationNextLink();
         this.updateNavigationLinks(link);
 
         return this;
@@ -321,7 +319,7 @@ class VideosModal
     updateNavigationLinks (triggeredLink) {
         let that = this;
         let provider = triggeredLink.getAttribute('data-videos-modal-provider');
-        let modal = document.getElementById('videos-modal');
+        let modal = that.getVideosModalContainer();
         let prevLink = document.getElementById('videos-modal-prev-link');
         let nextLink = document.getElementById('videos-modal-next-link');
         that.isProviderSupported(provider);
@@ -399,12 +397,31 @@ class VideosModal
     }
 
     /**
+     * Return the provider of the current link. If the current link does not have a provider parameter, it will return
+     * the default provider
+     *
+     * @param link
+     * @returns {string}
+     */
+    getLinkProvider (link) {
+        let that = this;
+        let provider = link.getAttribute('data-videos-modal-provider');
+
+        if (typeof provider === 'undefined' || provider === null || provider === '') {
+            provider = that.options.videos_provider;
+        }
+
+        return provider;
+    }
+
+    /**
      * Remove the navigation links in the modal
      *
      * @returns {VideosModal}
      */
     removeNavigationLinks() {
-        let modal = document.getElementById('videos-modal');
+        let that = this;
+        let modal = that.getVideosModalContainer();
         let links = modal.getElementsByTagName('a'), index;
 
         for (index = links.length - 1; index >= 0; index--) {
@@ -447,6 +464,7 @@ class VideosModal
         let rel = this.setTemplateLinkValues(link, 'rel');
         let controls = parseInt(this.setTemplateLinkValues(link, 'controls'));
         let showinfo = parseInt(this.setTemplateLinkValues(link, 'showinfo'));
+        let theme = this.setTemplateLinkValues(link, 'theme', 'dark');
         let allowfullscreen = this.setTemplateLinkValues(link, 'allowfullscreen');
         let title = this.setTemplateLinkValues(link, 'title');
         let byline = this.setTemplateLinkValues(link, 'byline');
@@ -464,6 +482,7 @@ class VideosModal
                 src += `&controls=${controls}`;
                 src += `&rel=${rel}`;
                 src += `&showinfo=${showinfo}`;
+                src += `&theme=${theme === 'dark' || theme === 'light' ? theme : 'dark'}`;
                 break;
             case 'youtubeplaylist':
                 id = this.setTemplateLinkValues(link, 'id', 'PLDz1o5Ur8b7V56es-ci2_HdykvZPLNU95');
@@ -504,6 +523,8 @@ class VideosModal
                     videoPlayer.setAttribute('loop', loop);
                     videoPlayer.setAttribute('byline', byline);
                     videoPlayer.setAttribute('portrait', portrait);
+                } else if (provider === 'youtube') {
+                    videoPlayer.setAttribute('theme', theme);
                 }
             } else {
                 videoPlayer = document.createElement('iframe');
@@ -591,6 +612,7 @@ class VideosModal
         targetLink.setAttribute('data-videos-modal-showinfo', this.getLinkAttribute(link, 'showinfo'));
         targetLink.setAttribute('data-videos-modal-allowfullscreen',
             this.getLinkAttribute(link, 'allowfullscreen'));
+        targetLink.setAttribute('data-videos-modal-theme', this.getLinkAttribute(link, 'theme'));
         targetLink.setAttribute('data-videos-modal-title', this.getLinkAttribute(link, 'title'));
         targetLink.setAttribute('data-videos-modal-byline', this.getLinkAttribute(link, 'byline'));
         targetLink.setAttribute('data-videos-modal-portrait', this.getLinkAttribute(link, 'portrait'));
@@ -612,11 +634,12 @@ class VideosModal
      */
     setVideosModalContainer () {
         let that = this;
-        let videosModalContainer = document.getElementById('videos-modal');
+        let videosModalContainer = that.getVideosModalContainer();
         if (videosModalContainer === null) {
             videosModalContainer = document.createElement('div');
             videosModalContainer.setAttribute('id', 'videos-modal');
         }
+
         if (that.options.closeByIcon === true) {
             videosModalContainer.insertAdjacentHTML('beforeend', that.getCloseIcon());
         }
@@ -627,11 +650,11 @@ class VideosModal
             videosModalContainer.classList.add('only-landscape');
         }
 
-        document.body.appendChild(videosModalContainer);
-
         let modalBackground = document.createElement('div');
         modalBackground.setAttribute('id', 'videos-modal-background');
         videosModalContainer.appendChild(modalBackground);
+
+        document.body.appendChild(videosModalContainer);
 
         return this;
     }
@@ -642,7 +665,8 @@ class VideosModal
      * @returns {VideosModal}
      */
     removeVideoContainer() {
-        let modal = document.getElementById('videos-modal');
+        let that = this;
+        let modal = that.getVideosModalContainer();
         let videoContainer = modal.getElementsByClassName('videos_player'), index;
 
         for (index = videoContainer.length - 1; index >= 0; index--) {
@@ -710,7 +734,7 @@ class VideosModal
     }
 
     /**
-     * Check if the video of the param link has some provider
+     * Check if the video of the param link has some registered provider
      *
      * @param link
      * @returns {boolean}
@@ -726,7 +750,7 @@ class VideosModal
      */
     onKeyDown (event) {
         let that = this;
-        let modal = document.getElementById('videos-modal');
+        let modal = that.getVideosModalContainer();
 
         if (modal.classList.contains('opened')) {
             switch (event.keyCode || event.which) {
@@ -748,6 +772,33 @@ class VideosModal
                     break;
             }
         }
+    }
+
+    /**
+     * Return the Videos Modal Container
+     *
+     * @returns {HTMLElement}
+     */
+    getVideosModalContainer () {
+        return document.getElementById('videos-modal');
+    }
+
+    /**
+     * Return the HTML navigation previous link
+     *
+     * @returns {HTMLElement}
+     */
+    getNavigationPrevLink () {
+        return document.getElementById('videos-modal-prev-link');
+    }
+
+    /**
+     * Return the HTML navigation next link
+     *
+     * @returns {HTMLElement}
+     */
+    getNavigationNextLink () {
+        return document.getElementById('videos-modal-next-link');
     }
 
     /**
