@@ -693,10 +693,7 @@ class VideosModal
      */
     isProviderAllowedByTarteAuCitron (provider) {
         let tarteaucitron = this.options.tarteAuCitron;
-        if (this.isTarteAuCitronEnabled() && this.isProviderSupported(provider)) {
-            return tarteaucitron.state[provider] !== false;
-        }
-        return false;
+        return this.isTarteAuCitronEnabled() && this.isProviderSupported(provider) && tarteaucitron.state[provider];
     }
 
     /**
