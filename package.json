@@ -6,13 +6,13 @@
   "directories": {
     "example": "examples"
   },
-  "dependencies": {},
   "devDependencies": {
     "gulp": "^4.0.2",
-    "gulp-cli": "^2.2.0",
+    "gulp-cli": "^2.3.0",
     "gulp-concat": "^2.6.1",
     "gulp-csso": "^3.0.1",
-    "gulp-terser": "^1.2.0"
+    "gulp-terser": "^1.4.1",
+    "kind-of": "^6.0.3"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
