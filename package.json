@@ -7,14 +7,16 @@
     "example": "examples"
   },
   "devDependencies": {
+    "braces": "^2.3.2",
+    "glob-parent": ">=5.1.2",
     "gulp": "^4.0.2",
     "gulp-cli": "^2.3.0",
     "gulp-concat": "^2.6.1",
     "gulp-csso": "^4.0.1",
     "gulp-terser": "^2.0.1",
-    "hoek": ">=4.2.1",
+    "hoek": "^2.3.0",
     "kind-of": "^6.0.3",
-    "lodash": ">=4.17.19",
+    "lodash": "^4.17.21",
     "lodash.template": ">=4.5.0",
     "minimatch": ">=3.0.2"
   },
