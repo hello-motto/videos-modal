@@ -12,7 +12,7 @@ A little JS plugin for videos embed working with tarteaucitronjs.<br>
 You may install the NPM package `hello-motto-videos-modal`. When installed you can add it in your resources.
 
 ```bash
-$ npm -g install hello-motto-videos-modal
+$ npm install hello-motto-videos-modal
 ```
 
 ### Direct download
