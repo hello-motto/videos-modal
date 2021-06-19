@@ -2,72 +2,105 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+              integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <link rel="stylesheet" href="../css/videos-modal.css">
         <title>Videos Modal Example</title>
     </head>
-    <body style="background: green">
-        <a href="//www.youtube.com/watch?v=elbgmrH06Qg" class="play" data-videos-modal-provider="youtube"
-            data-videos-modal-id="elbgmrH06Qg" data-videos-modal-autoplay="1" data-videos-modal-rel="0" data-videos-modal-controls="1"
-            data-videos-modal-showinfo="1" data-videos-modal-allowfullscreen="1">
-             First link
-        </a>
-        <br>
-        <a href="//www.youtube.com/watch?v=FFrISHfZHuE?autoplay=1" class="play" data-videos-modal-provider="youtube"
-           data-videos-modal-id="FFrISHfZHuE" data-videos-modal-autoplay="1" data-videos-modal-controls="1" data-videos-modal-rel="0"
-           data-videos-modal-showinfo="1" data-videos-modal-allowfullscreen="1">
-            Hiring
-        </a>
-        <br>
-        <a href="//www.youtube.com/watch?v=QPmYEfvbQKE?autoplay=1" class="play" data-videos-modal-provider="youtube"
-           data-videos-modal-id="QPmYEfvbQKE" data-videos-modal-autoplay="1" data-videos-modal-controls="1" data-videos-modal-rel="0"
-           data-videos-modal-showinfo="1" data-videos-modal-allowfullscreen="1">
-            Blockchain
-        </a>
-        <br>
-        <a href="//www.youtube.com/watch?v=AVjE2ml_x3g&list=PLDz1o5Ur8b7V56es-ci2_HdykvZPLNU95?autoplay=0"
-           class="play" data-videos-modal-provider="youtubeplaylist"
-           data-videos-modal-id="PLDz1o5Ur8b7V56es-ci2_HdykvZPLNU95" data-videos-modal-autoplay="1" data-videos-modal-controls="1"
-           data-videos-modal-rel="0" data-videos-modal-showinfo="0" data-videos-modal-allowfullscreen="1" data-videos-modal-loop="1">
-            Sandou
-        </a>
-        <br>
-        <a href="//vimeo.com/170642311" class="play" data-videos-modal-provider="vimeo"
-           data-videos-modal-id="170642311" data-videos-modal-autoplay="1" data-videos-modal-controls="1"
-           data-videos-modal-rel="0" data-videos-modal-showinfo="1" data-videos-modal-allowfullscreen="1"
-           data-videos-modal-loop="true" data-videos-modal-title="false">
-            Definitly
-        </a>
-        <br>
-        <a href="//www.youtube.com/watch?v=Q5fftru-t-g?autoplay=0" class="play" data-videos-modal-provider="youtube"
-           data-videos-modal-id="Q5fftru-t-g" data-videos-modal-autoplay="0" data-videos-modal-controls="1" data-videos-modal-rel="0"
-           data-videos-modal-showinfo="1" data-videos-modal-allowfullscreen="1">
-            Itoura
-        </a>
-        <br>
-        <a href="./media/scrabble.mp4" class="play" data-videos-modal-mp4="./media/scrabble.mp4"
-           data-videos-modal-autoplay="1" data-videos-modal-controls="1"
-           data-videos-modal-muted="0" data-videos-modal-loop="0">
-            Scrabble
-        </a>
-        <br>
-        <a href="//vimeo.com/210806913" class="play" data-videos-modal-provider="vimeo"
-            data-videos-modal-id="210806913" data-videos-modal-autoplay="0" data-videos-modal-controls="1"
-            data-videos-modal-rel="0" data-videos-modal-showinfo="1" data-videos-modal-allowfullscreen="1"
-            data-videos-modal-loop="true" data-videos-modal-title="false">
-            Unknown
-        </a>
+    <body class="bg-white">
+        <header>
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark container-fluid position-fixed py-1">
+                <a class="navbar-brand" href="https://videos-modal.hello-motto.com/">
+                    Videos Modal
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ml-lg-auto">
+                        <li class="nav-item">
+                            <a href="./index.html" class="nav-link">
+                                Home
+                                <span class="sr-only">(current)</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="./multi-providers.html" class="nav-link active">
+                                Multi providers
+                                <span class="sr-only">(current)</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="./without-tarteaucitron.html" class="nav-link">
+                                Without TarteAuCitron
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <div class="container pt-5">
+            <p class="mt-5">You can click on the bellow buttons to open the videos modal.</p>
+            <a href="//www.youtube.com/watch?v=elbgmrH06Qg" class="play btn btn-warning" data-videos-modal-provider="youtube"
+                data-videos-modal-id="elbgmrH06Qg" data-videos-modal-autoplay="1" data-videos-modal-rel="0" data-videos-modal-controls="1"
+                data-videos-modal-showinfo="1" data-videos-modal-allowfullscreen="1">
+                 First link
+            </a>
+            <a href="//www.youtube.com/watch?v=FFrISHfZHuE?autoplay=1" class="play btn btn-warning" data-videos-modal-provider="youtube"
+               data-videos-modal-id="FFrISHfZHuE" data-videos-modal-autoplay="1" data-videos-modal-controls="1" data-videos-modal-rel="0"
+               data-videos-modal-showinfo="1" data-videos-modal-allowfullscreen="1">
+                Hiring
+            </a>
+            <a href="//www.youtube.com/watch?v=QPmYEfvbQKE?autoplay=1" class="play btn btn-warning" data-videos-modal-provider="youtube"
+               data-videos-modal-id="QPmYEfvbQKE" data-videos-modal-autoplay="1" data-videos-modal-controls="1" data-videos-modal-rel="0"
+               data-videos-modal-showinfo="1" data-videos-modal-allowfullscreen="1">
+                Blockchain
+            </a>
+            <a href="//www.youtube.com/watch?v=AVjE2ml_x3g&list=PLDz1o5Ur8b7V56es-ci2_HdykvZPLNU95?autoplay=0"
+               class="play btn btn-warning" data-videos-modal-provider="youtubeplaylist"
+               data-videos-modal-id="PLDz1o5Ur8b7V56es-ci2_HdykvZPLNU95" data-videos-modal-autoplay="1" data-videos-modal-controls="1"
+               data-videos-modal-rel="0" data-videos-modal-showinfo="0" data-videos-modal-allowfullscreen="1" data-videos-modal-loop="1">
+                Sandou
+            </a>
+            <a href="//vimeo.com/170642311" class="play btn btn-warning" data-videos-modal-provider="vimeo"
+               data-videos-modal-id="170642311" data-videos-modal-autoplay="1" data-videos-modal-controls="1"
+               data-videos-modal-rel="0" data-videos-modal-showinfo="1" data-videos-modal-allowfullscreen="1"
+               data-videos-modal-loop="true" data-videos-modal-title="false">
+                Definitly
+            </a>
+            <a href="//www.youtube.com/watch?v=Q5fftru-t-g?autoplay=0" class="play btn btn-warning" data-videos-modal-provider="youtube"
+               data-videos-modal-id="Q5fftru-t-g" data-videos-modal-autoplay="0" data-videos-modal-controls="1" data-videos-modal-rel="0"
+               data-videos-modal-showinfo="1" data-videos-modal-allowfullscreen="1">
+                Itoura
+            </a>
+            <a href="./media/scrabble.mp4" class="play btn btn-warning" data-videos-modal-mp4="./media/scrabble.mp4"
+               data-videos-modal-autoplay="1" data-videos-modal-controls="1"
+               data-videos-modal-muted="0" data-videos-modal-loop="0">
+                Scrabble
+            </a>
+            <a href="//vimeo.com/210806913" class="play btn btn-warning" data-videos-modal-provider="vimeo"
+                data-videos-modal-id="210806913" data-videos-modal-autoplay="0" data-videos-modal-controls="1"
+                data-videos-modal-rel="0" data-videos-modal-showinfo="1" data-videos-modal-allowfullscreen="1"
+                data-videos-modal-loop="true" data-videos-modal-title="false">
+                Unknown
+            </a>
+        </div>
         <div id="videos-modal"></div>
-        <script src="../build/videos-modal.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
         <script src="//opt-out.ferank.eu/tarteaucitron.js"></script>
+        <script src="../build/videos-modal.min.js"></script>
         <script>
             tarteaucitron.init({
                 "privacyUrl": "", /* Privacy policy url */
                 "hashtag": "#tarteaucitron", /* Open the panel with this hashtag */
                 "cookieName": "tartaucitron", /* Cookie name */
                 "orientation": "bottom", /* Banner position (top - bottom) */
-                "showAlertSmall": true, /* Show the small banner on bottom right */
+                "showAlertSmall": false, /* Show the small banner on bottom right */
                 "cookieslist": true, /* Show the cookie list */
                 "adblocker": false, /* Show a Warning if an adblocker is detected */
                 "AcceptAllCta" : true, /* Show the accept all button when highPrivacy on */
@@ -87,7 +120,7 @@
                 onlyLandscape: false
             });
             var itoura2 = '<br>' +
-                '<a href="https://www.dailymotion.com/video/xta4r" class="play" data-videos-modal-provider="dailymotion" ' +
+                '<a href="https://www.dailymotion.com/video/xta4r" class="play btn btn-info mx-auto" data-videos-modal-provider="dailymotion" ' +
                     'data-videos-modal-id="xta4r" data-videos-modal-autoplay="0" data-videos-modal-controls="1" ' +
                     'data-videos-modal-rel="0" data-videos-modal-showinfo="1" data-videos-modal-allowfullscreen="1">' +
                     'Steph' +
