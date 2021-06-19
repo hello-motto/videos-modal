@@ -1,7 +1,7 @@
 /**
  * Videos Modal Plugin https://github.com/hello-motto
  * 
- * Version 1.0.10
+ * Version 1.1.3
  * 
  * @author Jean-Baptiste MOTTO <contact@hello-motto.fr>
  */
