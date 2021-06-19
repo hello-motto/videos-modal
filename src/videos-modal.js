@@ -1,7 +1,7 @@
 /**
  * Videos Modal Plugin https://github.com/hello-motto
  * 
- * Version 1.0.10
+ * Version 1.1.3
  * 
  * @author Jean-Baptiste MOTTO <contact@hello-motto.fr>
  */
@@ -120,7 +120,7 @@ class VideosModal
      *
      * @returns {string[]}
      */
-    getSupportedProviders () {
+    getSupportedByTarteAuCitronProviders () {
         return [
             'youtube',
             'dailymotion',
@@ -135,9 +135,23 @@ class VideosModal
      * @param provider
      * @returns {boolean}
      */
-    isProviderSupported (provider) {
-        return this.getSupportedProviders().indexOf(provider) > -1;
+    isSupportedByTarteAuCitronProvider (provider) {
+        return this.getSupportedByTarteAuCitronProviders().indexOf(provider) > -1;
     }
+	
+	/**
+     * Check if the parameter provider does need the tarteAuCitron panel to be allowed
+     *
+     * @param provider
+     * @returns {boolean}
+     */
+	doesProviderNeedToBeAllowedByTarteAuCitron (provider) {
+		if (! this.isTarteAuCitronEnabled()) {
+			return false;
+		}
+		
+		return this.isSupportedByTarteAuCitronProvider(provider);
+	}
 
     /**
      * Set the links by query selector
@@ -226,14 +240,14 @@ class VideosModal
         let modal = that.getVideosModalContainer();
         let provider = that.getLinkProvider(link);
 
-        if (that.isTarteAuCitronEnabled() && ! that.isProviderAllowedByTarteAuCitron(provider)) {
+        if (that.isTarteAuCitronEnabled() && ! that.isProviderAllowedByTarteAuCitron(provider) && that.doesProviderNeedToBeAllowedByTarteAuCitron(provider)) {
             that.options.tarteAuCitron.userInterface.openPanel();
         } else {
             modal.classList.add('opened');
             modal.appendChild(that.getVideoTemplate(link));
 
             if (! that.hasNoProvider(link)) {
-                if (that.isProviderAllowedByTarteAuCitron(provider)) {
+                if (that.doesProviderNeedToBeAllowedByTarteAuCitron(provider)) {
                     that.options.tarteAuCitron.services[provider].js();
                 }
             }
@@ -322,7 +336,7 @@ class VideosModal
         let modal = that.getVideosModalContainer();
         let prevLink = document.getElementById('videos-modal-prev-link');
         let nextLink = document.getElementById('videos-modal-next-link');
-        that.isProviderSupported(provider);
+        that.isSupportedByTarteAuCitronProvider(provider);
         if (! that.isTarteAuCitronEnabled() || (that.hasNoProvider(triggeredLink)) ||
             that.isProviderAllowedByTarteAuCitron(provider)) {
             let newVideoTemplate = that.getVideoTemplate(triggeredLink);
@@ -337,7 +351,7 @@ class VideosModal
 
             modal.appendChild(newVideoTemplate);
 
-            if (that.isProviderAllowedByTarteAuCitron(provider)) {
+            if (that.isProviderAllowedByTarteAuCitron(provider) && that.options.tarteAuCitron !== null) {
                 that.options.tarteAuCitron.services[provider].js();
             }
         } else {
@@ -693,7 +707,13 @@ class VideosModal
      */
     isProviderAllowedByTarteAuCitron (provider) {
         let tarteaucitron = this.options.tarteAuCitron;
-        return this.isTarteAuCitronEnabled() && this.isProviderSupported(provider) && tarteaucitron.state[provider];
+        if (this.isTarteAuCitronEnabled()) {
+			if (this.isSupportedByTarteAuCitronProvider(provider)) {
+				return tarteaucitron.state[provider] === true;
+			}
+        }
+		
+        return false;
     }
 
     /**
