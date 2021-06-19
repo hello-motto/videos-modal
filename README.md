@@ -40,8 +40,8 @@ Include `videos-modal.js` or `videos-modal.min.js` script :
 ## Usage
 
 This is a script that show videos (from youtube or others) into a modal. It's working with tarteaucitron and videos will be blocked if the provider (Youtube for example) is not allowed by the user.<br>
-Examples below can be found in the [example page](https://www.hello-motto.fr/videos-modal/examples/multi-providers.html)
-and in the [example without tarteaucitron page](https://www.hello-motto.fr/videos-modal/examples/without-tarteaucitron.html).
+Examples below can be found in the [example page](https://videos-modal.hello-motto.com//multi-providers.html)
+and in the [example without tarteaucitron page](https://videos-modal.hello-motto.com/without-tarteaucitron.html).
 
 ### Create JavaScript Object
 

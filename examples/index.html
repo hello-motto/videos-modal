@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+              integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <link rel="stylesheet" href="../css/videos-modal.css">
+        <title>Videos Modal Example</title>
+    </head>
+    <body class="bg-white">
+        <header>
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark container-fluid position-fixed py-1">
+                <a class="navbar-brand" href="https://videos-modal.hello-motto.com/">
+                    Videos Modal
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ml-lg-auto">
+                        <li class="nav-item">
+                            <a href="./index.html" class="nav-link active">
+                                Home
+                                <span class="sr-only">(current)</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="./multi-providers.html" class="nav-link">
+                                Multi providers
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="./without-tarteaucitron.html" class="nav-link">
+                                Without TarteAuCitron
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <div class="container pt-5">
+            <h1 class="mt-5">Welcome on the Videos Modal script page.</h1>
+
+            <p>You can fork or clone the repository on Github</p>
+
+            <div class="row">
+                <a href="https://github.com/hello-motto/videos-modal" class="col-2">
+                    <img src="media/github-logo.png" alt="Github Logo" class="w-100">
+                </a>
+            </div>
+
+
+            <p class="mt-5">Bellow the installation documentation :</p>
+
+            <h2 id="videos-modal">Videos Modal</h2>
+            <p><a href="https://www.npmjs.com/package/hello-motto-videos-modal"><img src="https://img.shields.io/npm/v/hello-motto-videos-modal.svg" alt="NPM @latest"></a><br></p>
+            <p>A little JS plugin for videos embed working with tarteaucitronjs.<br></p>
+            <p><a href="https://www.npmjs.org/package/hello-motto-videos-modal"><img src="https://nodei.co/npm/hello-motto-videos-modal.svg?downloadRank=true&amp;downloads=true" alt="NPM stats"></a></p>
+            <h2 id="installation">Installation</h2>
+            <h3 id="node-js-javascript">Node.js JavaScript</h3>
+            <p>You may install the NPM package <code>hello-motto-videos-modal</code>. When installed you can add it in your resources.</p>
+            <pre><code class="lang-bash">$ npm <span class="hljs-keyword">install</span> hello-motto-videos-modal
+</code></pre>
+            <h3 id="direct-download">Direct download</h3>
+            <p>Instead of using NPM, it is possible to download <a href="https://github.com/hello-motto/videos-modal/archive/master.zip">the last stable version here</a> and use the files that you need.</p>
+            <h3 id="html">HTML</h3>
+            <p>Include <code>videos-modal.css</code> or <code>videos-modal.min.css</code> stylesheet :</p>
+            <pre><code class="lang-html"><span class="hljs-comment">&lt;!-- Normal version --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">"stylesheet"</span> <span class="hljs-attr">href</span>=<span class="hljs-string">"videos-modal.css"</span>/&gt;</span>
+<span class="hljs-comment">&lt;!-- OR the minified version --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">"stylesheet"</span> <span class="hljs-attr">href</span>=<span class="hljs-string">"videos-modal.min.css"</span>/&gt;</span>
+</code></pre>
+            <p>Include <code>videos-modal.js</code> or <code>videos-modal.min.js</code> script :</p>
+            <pre><code class="lang-html"><span class="hljs-comment">&lt;!-- Normal version --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"videos-modal.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-comment">&lt;!-- OR the minified and uglyfied version --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"videos-modal.min.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
+            <h2 id="usage">Usage</h2>
+            <p>This is a script that show videos (from youtube or others) into a modal. It&#39;s working with tarteaucitron and videos will be blocked if the provider (Youtube for example) is not allowed by the user.<br>
+                Examples below can be found in the <a href="https://www.hello-motto.fr/videos-modal/examples/multi-providers.html">example page</a>
+                and in the <a href="https://www.hello-motto.fr/videos-modal/examples/without-tarteaucitron.html">example without tarteaucitron page</a>.</p>
+            <h3 id="create-javascript-object">Create JavaScript Object</h3>
+            <p>To instanciate the object it is possible to pass an optional JSON object as argument. This object is optional because
+                all the parameters have default values and most of them can be overwritten by each link.<br>
+                Here are the options with the by default values.<br>
+                Only options beginning with <code>video_</code> can be overwritten by link attributes.</p>
+            <pre><code class="lang-js"><span class="hljs-keyword">var</span> videosModal = new <span class="hljs-type">VideosModal</span>({
+    closeOnClick: <span class="hljs-literal">true</span>,
+    closeWithEscape: <span class="hljs-literal">true</span>,
+    closeByIcon: <span class="hljs-literal">true</span>,
+    closeIcon: '', // <span class="hljs-type">Default</span> icon <span class="hljs-type">VideosModal</span>.getDefaultCloseIcon(), this needs that closeByIcon <span class="hljs-keyword">is</span> <span class="hljs-built_in">set</span> <span class="hljs-keyword">as</span> <span class="hljs-literal">true</span>
+    loading: <span class="hljs-literal">true</span>,
+    loaderIcon: '', // <span class="hljs-type">Default</span> icon <span class="hljs-type">VideosModal</span>().getDefaultLoaderIcon(), this needs that loading <span class="hljs-keyword">is</span> <span class="hljs-built_in">set</span> <span class="hljs-keyword">as</span> <span class="hljs-literal">true</span>
+    navigate: <span class="hljs-literal">true</span>,
+    leftArrow: '', // <span class="hljs-type">Default</span> icon <span class="hljs-type">VideosModal</span>.getDefaultLeftArrow(), this needs that navigate <span class="hljs-keyword">is</span> <span class="hljs-built_in">set</span> <span class="hljs-keyword">as</span> <span class="hljs-literal">true</span>
+    rightArrow: '', // <span class="hljs-type">Default</span> icon <span class="hljs-type">VideosModal</span>.getDefaultRightArrow(), this needs that navigate <span class="hljs-keyword">is</span> <span class="hljs-built_in">set</span> <span class="hljs-keyword">as</span> <span class="hljs-literal">true</span>
+    onlyLandscape: <span class="hljs-literal">true</span>, // <span class="hljs-keyword">if</span> <span class="hljs-literal">true</span>, on mobile devices it should turn the video (it's adding a only-landscape class)
+    tarteAuCitron: null, // <span class="hljs-keyword">if</span> tarteaucitron <span class="hljs-keyword">is</span> used, put the variable into it.
+    links: '.videos-modal-link', // <span class="hljs-type">It</span> <span class="hljs-keyword">is</span> possible to <span class="hljs-built_in">set</span> several selectors <span class="hljs-keyword">as</span> a <span class="hljs-built_in">string</span>.
+    videos_id: null,
+    videos_provider: 'media', // <span class="hljs-type">Default</span> provider <span class="hljs-keyword">is</span> direct media
+    videos_width: null,
+    videos_height: null,
+    videos_autoplay: <span class="hljs-number">0</span>,
+    videos_rel: <span class="hljs-number">0</span>,
+    videos_controls: <span class="hljs-number">0</span>,
+    videos_showinfo: <span class="hljs-number">0</span>,
+    videos_allowfullscreen: <span class="hljs-number">0</span>,
+    videos_title: <span class="hljs-literal">true</span>,
+    videos_byline: <span class="hljs-literal">true</span>,
+    videos_portrait: <span class="hljs-literal">true</span>,
+    videos_loop: <span class="hljs-literal">false</span>
+});
+</code></pre>
+            <h3 id="create-html-container-for-the-modal-optional-">Create HTML container for the modal (optional)</h3>
+            <p>This is an optional container. If this not exists, it will be inserted at the end of the body.</p>
+            <pre><code class="lang-html">&lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">id</span>=<span class="hljs-string">"videos-modal"</span>&gt;&lt;/<span class="hljs-keyword">div</span>&gt;
+</code></pre>
+            <h3 id="add-links-for-the-embed-videos">Add links for the embed videos</h3>
+            <p>The <code>href</code> attribute won&#39;t be used (but is important if javascript is no enabled, or the user is using Internet Explorer. So pray for her/him). The <code>data-videos-modal-*</code> attributes overwrite the by default parameters.</p>
+            <pre><code class="lang-html"><span class="hljs-comment">&lt;!-- Youtube Provider Video --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">"https://www.youtube.com/watch?v=elbgmrH06Qg"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"videos-modal-link"</span> <span class="hljs-attr">data-videos-modal-provider</span>=<span class="hljs-string">"youtube"</span>
+    <span class="hljs-attr">data-videos-modal-id</span>=<span class="hljs-string">"elbgmrH06Qg"</span> <span class="hljs-attr">data-videos-modal-autoplay</span>=<span class="hljs-string">"1"</span> <span class="hljs-attr">data-videos-modal-rel</span>=<span class="hljs-string">"0"</span>
+    <span class="hljs-attr">data-videos-modal-controls</span>=<span class="hljs-string">"1"</span> <span class="hljs-attr">data-videos-modal-showinfo</span>=<span class="hljs-string">"1"</span> <span class="hljs-attr">data-videos-modal-allowfullscreen</span>=<span class="hljs-string">"1"</span>&gt;</span>
+        First link
+<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>
+</code></pre>
+            <p>To add some video media, don&#39;t use <code>data-videos-modal-id</code> but <code>data-videos-modal-</code> + format of the video. For example <code>data-videos-modal-ogg</code> for ogg format videos. </p>
+            <pre>
+<code class="lang-html">
+<span class="hljs-comment">&lt;!-- Video Media without provider --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">"./media/scrabble.mp4"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"play"</span> <span class="hljs-attr">data-videos-modal-mp4</span>=<span class="hljs-string">"./media/scrabble.mp4"</span> <span class="hljs-attr">data-videos-modal-autoplay</span>=<span class="hljs-string">"1"</span>
+<span class="hljs-attr">data-videos-modal-controls</span>=<span class="hljs-string">"1"</span> <span class="hljs-attr">data-videos-modal-muted</span>=<span class="hljs-string">"0"</span> <span class="hljs-attr">data-videos-modal-loop</span>=<span class="hljs-string">"0"</span>&gt;</span>
+    Scrabble
+<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>
+</code>
+            </pre>
+            <h3 id="add-or-remove-links-after-the-page-is-loaded">Add or remove links after the page is loaded</h3>
+            <p>If there are new links or links are removed after the page is loaded (ajax or modified DOM), you can easily reset the script and the links list.</p>
+            <pre>
+                <code class="lang-js">videosModal.reset()<span class="hljs-comment">;</span></code>
+            </pre>
+            <h2 id="compatibility">Compatibility</h2>
+            <p>This script should work with all modern browsers (so forget IE). If you see compatibility problems please contact me.</p>
+            <h2 id="available-providers">Available providers</h2>
+            <ul>
+                <li>Dailymotion</li>
+                <li>Vimeo</li>
+                <li>Youtube</li>
+                <li>Youtube Playlist</li>
+            </ul>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+        <script src="//opt-out.ferank.eu/tarteaucitron.js"></script>
+        <script src="../build/videos-modal.min.js"></script>
+    </body>
+</html>
